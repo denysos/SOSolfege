@@ -29,8 +29,19 @@ Class {
 	#category : #'SOSolfege-core'
 }
 
-{ #category : #'accessing - data' }
+{ #category : #examples }
+SONotesGenerator class >> exempleOfSettingsGenerator1: aGenerator [
+	"notesToLearn: {'c2' . 'd2' . 'e2' . 'f2' . 'g2' . 'a2' . 'b2'} asOrderedCollection;"
+
+	^ aGenerator
+		notesToLearn: {8 . 9 . 10 . 11 . 12 . 13 . 14} asOrderedCollection;
+		notesNumberToDraw: 3;
+		yourself
+]
+
+{ #category : #deprecated }
 SONotesGenerator >> allNotesOnScore [
+"to be moved in a param class"
 ^ { 'c1' . 'd1' . 'e1' . 'f1' . 'g1' . 'a1' . 'b1' . 
 'c2' . 'd2' . 'e2' . 'f2' . 'g2' . 'a2' . 'b2' .  
 'c3' . 'd3' . 'e3' . 'f3' . 'g3' . 'a3' . 'b3' .
@@ -40,21 +51,21 @@ SONotesGenerator >> allNotesOnScore [
 
 { #category : #action }
 SONotesGenerator >> drawNotesFromNotesToLearn [
-"draw notes from notesToLearn at random, the same note may be draw more than ones
+	"draw notes from notesToLearn at random, the same note may be draw more than ones
+	but there will be only one of each in the Chord (see SOChord)
 "
 
-	| noteSelected |
-	"noteSelected := OrderedCollection new."
-	noteSelected := Set new .
+	| chord |
+	chord := SOChord new.
 	notesNumberToDraw
-		timesRepeat: [ noteSelected add: notesToLearn atRandom ].
-	^ noteSelected
+		timesRepeat: [ chord addANote: notesToLearn atRandom ].
+	^ chord
 ]
 
 { #category : #initialization }
 SONotesGenerator >> initialize [
 	super initialize.
-	notesToLearn := OrderedCollection new.
+	notesToLearn := SONotes allNotesOnScore.
 	notesNumberToDraw := 1
 ]
 
@@ -64,8 +75,8 @@ SONotesGenerator >> notesNumberToDraw [
 ]
 
 { #category : #accessing }
-SONotesGenerator >> notesNumberToDraw: anObject [
-	notesNumberToDraw := anObject
+SONotesGenerator >> notesNumberToDraw: anInteger [
+	notesNumberToDraw := anInteger
 ]
 
 { #category : #accessing }
