@@ -1,4 +1,8 @@
 "
+voir communication C/C++ pour utiliser user32.dll ??? : https://www.teddy.ch/c++_library_in_c/
+ou utilisation du package Pharo-com : https://github.com/tesonep/pharo-com
+ou voir le package  ""parasol"", (test de page web) comment les touches sont simulées ???
+
 à tester :
 
 aTypeArrayOfEvents := FFIArray newArrayTypeOf: #SOSKEYBDINPUT size: 2.
@@ -8,6 +12,7 @@ aKeyPressed := SOSKEYBDINPUT new
 		yourself.
 		
 utiliser : aKeyPressed sizeInMemory  ""pour la longeur de #SOSKEYBDINPUT lors de l'appel""
+INPUTSizeForKB := 16. ""ou 20 ou 24 ????   ---> même resultat !!!""
 
 **********************************************************************************************
 Questions : 
@@ -71,7 +76,7 @@ FFITuto class >> emptyClipboard [
 
 { #category : #'class initialization' }
 FFITuto class >> initialize [
-	INPUTSizeForKB := 24.
+	INPUTSizeForKB := 20.
 	"a temporary arrray of event, needed to test sendInput:, but have to find a solution to manage differents sizes on each call !!! "
 	ATypeArrayOfEvents := FFIArray newArrayTypeOf: #SOSKEYBDINPUT size: 2.
 	

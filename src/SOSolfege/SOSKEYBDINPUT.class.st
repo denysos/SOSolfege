@@ -3,7 +3,6 @@ Class {
 	#superclass : #FFIStructure,
 	#classVars : [
 		'DWORD',
-		'INPUTSize',
 		'KeyboardEventValue',
 		'OFFSET_DWEXTRAINFO',
 		'OFFSET_DWFLAGS',
@@ -34,9 +33,7 @@ SOSKEYBDINPUT class >> initialize [
 	WORD := #uint16.
 	DWORD := #uint32.
 	"ULONG_PTR := #uint64."
-	"INPUTSize := 24." "bytes"
 	ULONG_PTR := #ulong.
-	INPUTSize := 16. "bytes"
 	KeyboardEventValue := 1 "1 means keyboard is used, ... see another value for mouse ..."
 ]
 
