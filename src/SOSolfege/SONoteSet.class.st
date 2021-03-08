@@ -71,7 +71,7 @@ SONoteSet class >> initialize [
 { #category : #'instance creation' }
 SONoteSet class >> newFullNoteSet [
 	| aNoteSet |
-	aNoteSet := SONoteSet new.
+	aNoteSet := self class new.
 	1 to: MaxRank do: [ :i | aNoteSet addANote: i ].
 	^ aNoteSet
 ]
@@ -90,6 +90,11 @@ a Dictionary to make sure that there is no duplicate notes"
 
 	super initialize.
 	noteChoice := Dictionary new
+]
+
+{ #category : #printing }
+SONoteSet >> printOn: aStream [
+	noteChoice printString
 ]
 
 { #category : #enumerating }

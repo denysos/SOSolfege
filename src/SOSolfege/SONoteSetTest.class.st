@@ -36,9 +36,6 @@ SONoteSetTest >> testranksDo [
 	"rank added unordered in the noteSet"
 	aNoteSet := SONoteSet new.
 	unsortedRanks do: [ :each | aNoteSet addANote: each ].
-	"		addANote: rank1;
-		addANote: rank3;
-		addANote: rank2."
 	outputRanks := OrderedCollection new.
 	aNoteSet ranksDo: [ :each | outputRanks add: each ].
 	self
