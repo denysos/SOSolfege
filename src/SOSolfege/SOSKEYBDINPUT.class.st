@@ -24,16 +24,22 @@ SOSKEYBDINPUT class >> fieldsDesc [
 	WORD      wScan; "2 octets"
 	DWORD     dwFlags; "4 octets"
 	DWORD     time;    "4 octets"  
-	ULONG_PTR dwExtraInfo; "8 octets ?"
+	ULONG_PTR dwExtraInfo; "8 octets ? ULONG = 4 octets"
 )
 ]
 
 { #category : #'class initialization' }
 SOSKEYBDINPUT class >> initialize [
-	WORD := #uint16.
+"	WORD := #uint16.
 	DWORD := #uint32.
-	"ULONG_PTR := #uint64."
-	ULONG_PTR := #ulong.
+	ULONG_PTR := #ulong."
+	
+"types from package pharo-com :"
+WORD := #ushort.
+DWORD := #ulong.
+ULONG_PTR := FFIExternalValueHolder ofType: 'ulong'.
+
+
 	KeyboardEventValue := 1 "1 means keyboard is used, ... see another value for mouse ..."
 ]
 

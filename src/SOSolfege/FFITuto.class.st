@@ -1,7 +1,7 @@
 "
 voir communication C/C++ pour utiliser user32.dll ??? : https://www.teddy.ch/c++_library_in_c/
 ou utilisation du package Pharo-com : https://github.com/tesonep/pharo-com
-ou voir le package  ""parasol"", (test de page web) comment les touches sont simulées ???
+ou voir le package  ""parasol"", (test de page web) comment les touches sont simulées ??? ---> envoie le texte à une API Java
 
 à tester :
 
@@ -76,7 +76,7 @@ FFITuto class >> emptyClipboard [
 
 { #category : #'class initialization' }
 FFITuto class >> initialize [
-	INPUTSizeForKB := 20.
+	INPUTSizeForKB := 24.
 	"a temporary arrray of event, needed to test sendInput:, but have to find a solution to manage differents sizes on each call !!! "
 	ATypeArrayOfEvents := FFIArray newArrayTypeOf: #SOSKEYBDINPUT size: 2.
 	
