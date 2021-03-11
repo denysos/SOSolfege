@@ -45,10 +45,34 @@ https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-input
 https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-keybd_event
 https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
 
+*************************** playground *************************************************************
 
+""****** init *********""
+FFITuto initialize .
+SOSKEYBDINPUT initialize .
+SOSKEYBDINPUT rebuildFieldAccessors.
 
+""****** tests ********""
+(Delay forSeconds: 8) wait. 
+""1 halt .""
+FFITuto sendKey.
 
+""****** inspector ***********""
+input := SOSKEYBDINPUT new .
 
+""****** inspector ***********""
+aTypeArrayOfEvents := FFIArray newArrayTypeOf: #SOSKEYBDINPUT size: 2.
+anArrayOfEvents := aTypeArrayOfEvents new.
+aKeyPressed := SOSKEYBDINPUT new
+		wVk: 71;
+		yourself.
+
+""******* exemples tuto UFFI *******************************************""
+tps := FFITuto ticksSinceStart.
+absn := FFITuto abs: -15.
+
+""libc dispo pour linux et mac en pharo notif (?), mais pas sur windows ""
+""cf classe LibC ""
 
 
 "
@@ -76,7 +100,7 @@ FFITuto class >> emptyClipboard [
 
 { #category : #'class initialization' }
 FFITuto class >> initialize [
-	INPUTSizeForKB := 24.
+	INPUTSizeForKB := 24. "16 20 ou 24 ???"
 	"a temporary arrray of event, needed to test sendInput:, but have to find a solution to manage differents sizes on each call !!! "
 	ATypeArrayOfEvents := FFIArray newArrayTypeOf: #SOSKEYBDINPUT size: 2.
 	
@@ -91,10 +115,12 @@ FFITuto class >> sendInput: arrayOfEvents [
 
 { #category : #'private utils' }
 FFITuto class >> sendInput: arrayOfEvents ofNEvents: anInteger [ 
-
-
-^ self ffiCall: #( uint SendInput (uint anInteger ATypeArrayOfEvents arrayOfEvents int INPUTSizeForKB) ) library: 'user32.dll' 
 "fonctionne, mais pas d'effet !"
+
+^ self ffiCall: #( uint SendInput (uint anInteger SOSKEYBDINPUT arrayOfEvents int INPUTSizeForKB) ) library: 'user32.dll'
+
+"^ self ffiCall: #( uint SendInput (uint anInteger ATypeArrayOfEvents arrayOfEvents int INPUTSizeForKB) ) library: 'user32.dll'" 
+
 
 
 
@@ -125,11 +151,13 @@ FFITuto class >> sendKey: aKeyInHexa [
 		dwFlags: 16r0002;
 		"KEYEVENTF_KEYUP"
 			yourself.
-	anArrayOfEvents := ATypeArrayOfEvents new.	"FFIArray , must be created BEFORE using it !!! no cascade after new !!!"
+	anArrayOfEvents := ATypeArrayOfEvents new.	
+		"anArrayOfEvents pinInMemory ."
+	"anArrayOfEvents := ATypeArrayOfEvents externalNew."
+		"FFIArray , must be created BEFORE using it !!! no cascade after new !!!"
 		"once created, an array with complex types, each element must be filled in the array !"
 	(anArrayOfEvents at: 1) wVk: aKeyPressed wVk .
 	(anArrayOfEvents at: 2) wVk: aKeyReleased wVk ; dwFlags: aKeyReleased dwFlags .
-
 
 	self sendInput: anArrayOfEvents
 ]
