@@ -71,8 +71,16 @@ SONoteSet class >> initialize [
 { #category : #'instance creation' }
 SONoteSet class >> newFullNoteSet [
 	| aNoteSet |
-	aNoteSet := self class new.
+	aNoteSet := self new.
 	1 to: MaxRank do: [ :i | aNoteSet addANote: i ].
+	^ aNoteSet
+]
+
+{ #category : #'instance creation' }
+SONoteSet class >> newGKeyNoteSet [
+	| aNoteSet |
+	aNoteSet := self new.
+	15 to: 29 do: [ :i | aNoteSet addANote: i ].
 	^ aNoteSet
 ]
 
@@ -92,9 +100,14 @@ a Dictionary to make sure that there is no duplicate notes"
 	noteChoice := Dictionary new
 ]
 
+{ #category : #testing }
+SONoteSet >> isEmpty [
+	^ self size = 0
+]
+
 { #category : #printing }
 SONoteSet >> printOn: aStream [
-	noteChoice printString
+	aStream print: noteChoice
 ]
 
 { #category : #enumerating }

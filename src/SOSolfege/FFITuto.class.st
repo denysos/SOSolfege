@@ -1,4 +1,8 @@
 "
+pour pianoToText :
+
+voir utilisation de la lib SDL2 pour la gestion des événements ?
+
 voir communication C/C++ pour utiliser user32.dll ??? : https://www.teddy.ch/c++_library_in_c/
 ou utilisation du package Pharo-com : https://github.com/tesonep/pharo-com
 ou voir le package  ""parasol"", (test de page web) comment les touches sont simulées ??? ---> envoie le texte à une API Java

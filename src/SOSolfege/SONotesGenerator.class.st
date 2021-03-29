@@ -29,16 +29,6 @@ Class {
 	#category : #'SOSolfege-core'
 }
 
-{ #category : #examples }
-SONotesGenerator class >> exempleOfSettingsGenerator1: aGenerator [
-	"notesToLearn: {'c2' . 'd2' . 'e2' . 'f2' . 'g2' . 'a2' . 'b2'} asOrderedCollection;"
-
-	^ aGenerator
-		notesToLearn: {8 . 9 . 10 . 11 . 12 . 13 . 14} asOrderedCollection;
-		notesNumberToDraw: 3;
-		yourself
-]
-
 { #category : #deprecated }
 SONotesGenerator >> allNotesOnScore [
 "to be moved in a param class"
@@ -87,4 +77,10 @@ SONotesGenerator >> notesToLearn [
 { #category : #accessing }
 SONotesGenerator >> notesToLearn: anObject [
 	notesToLearn := anObject
+]
+
+{ #category : #'as yet unclassified' }
+SONotesGenerator >> singleDrawFrom: anExercice [
+	^ anExercice noteSet
+		subsetAtRandomWith: anExercice notesNumberInADraw
 ]

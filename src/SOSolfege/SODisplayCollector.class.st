@@ -32,18 +32,65 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'toDisplay',
-		'displayHistory'
+		'displayHistory',
+		'isUpdated'
 	],
 	#category : #'SOSolfege-core'
 }
 
 { #category : #adding }
-SODisplayCollector >> addChordNew: aChord [
-	toDisplay := SOCollectedChordsAndGuess new addChordNew.
+SODisplayCollector >> addNewDraw: aNoteSet [
+	self resetDisplay.
+	toDisplay aDraw: aNoteSet.
+	self sendUpdatedFlag
+]
+
+{ #category : #adding }
+SODisplayCollector >> addNewTry: aNoteSet [
+	toDisplay aTry: aNoteSet.
+	self sendUpdatedFlag
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayCollector >> getCollectedDrawAndTry [
+	^ toDisplay
 ]
 
 { #category : #initialization }
 SODisplayCollector >> initialize [
-	toDisplay := SOCollectedChordsAndGuess new.
+	super initialize.
+	toDisplay := SOCollectedDrawAndTry new.
 	displayHistory := OrderedCollection new
+]
+
+{ #category : #testing }
+SODisplayCollector >> isADrawEmpty [
+	^ toDisplay aDraw isEmpty
+]
+
+{ #category : #testing }
+SODisplayCollector >> isATryEmpty [
+	^ toDisplay aTry isEmpty
+]
+
+{ #category : #'accessing-testing' }
+SODisplayCollector >> isEmpty [
+	^ (toDisplay isADrawEmpty) and: [toDisplay isATryEmpty]
+]
+
+{ #category : #history }
+SODisplayCollector >> moveDisplayToHistory [
+	displayHistory add: toDisplay
+]
+
+{ #category : #initialization }
+SODisplayCollector >> resetDisplay [
+	self moveDisplayToHistory.
+	toDisplay := SOCollectedDrawAndTry new
+	
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayCollector >> sendUpdatedFlag [
+	^ true
 ]

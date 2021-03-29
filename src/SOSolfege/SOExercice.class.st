@@ -37,20 +37,42 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'tempo',
-		'notesNumber',
 		'noteSet',
-		'info'
+		'info',
+		'notesNumberInADraw',
+		'maxNotesRange'
 	],
 	#category : #'SOSolfege-core'
 }
+
+{ #category : #accessing }
+SOExercice >> info [
+	^ info
+]
+
+{ #category : #accessing }
+SOExercice >> info: aString [
+	info := aString
+]
 
 { #category : #initialization }
 SOExercice >> initialize [
 	super initialize.
 	tempo := 60.
-	notesNumber := 1.
+	notesNumberInADraw := 1.
 	noteSet := SONoteSet newFullNoteSet.
+	maxNotesRange := 10.
 	info := 'où en êtes vous avec cet exercice ?'
+]
+
+{ #category : #accessing }
+SOExercice >> maxNotesRange [
+	^ maxNotesRange
+]
+
+{ #category : #accessing }
+SOExercice >> maxNotesRange: anInteger [
+	maxNotesRange := anInteger
 ]
 
 { #category : #accessing }
@@ -59,23 +81,40 @@ SOExercice >> noteSet [
 ]
 
 { #category : #accessing }
-SOExercice >> noteSet: anObject [
-	noteSet := anObject
+SOExercice >> noteSet: aNoteSet [
+	noteSet := aNoteSet
 ]
 
 { #category : #accessing }
-SOExercice >> notesNumber [
-	^ notesNumber
+SOExercice >> notesNumberInADraw [
+	^ notesNumberInADraw
 ]
 
 { #category : #accessing }
-SOExercice >> notesNumber: anObject [
-	notesNumber := anObject
+SOExercice >> notesNumberInADraw: anInteger [
+	notesNumberInADraw := anInteger
+]
+
+{ #category : #printing }
+SOExercice >> printOn: aStream [
+	aStream
+		nextPutAll: self info;
+		cr;
+		nextPutAll: 'tempo: ';
+		print: self tempo;
+		space;
+		nextPutAll: 'notesNumberInADraw: ';
+		print: self notesNumberInADraw;
+		cr;
+		nextPutAll: 'noteSet: ';
+		print: self noteSet;
+		cr;
+		cr
 ]
 
 { #category : #'as yet unclassified' }
 SOExercice >> selectMeAsNew [
-	^ self copy
+	^ self deepCopy 
 ]
 
 { #category : #accessing }
@@ -84,6 +123,6 @@ SOExercice >> tempo [
 ]
 
 { #category : #accessing }
-SOExercice >> tempo: anObject [
-	tempo := anObject
+SOExercice >> tempo: anInteger [
+	tempo := anInteger
 ]
