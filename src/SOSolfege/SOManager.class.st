@@ -1,4 +1,11 @@
 "
+TODO :
+- creer un manager abstrait + 1 classe par cas de figure
+- creer le graphisme de la partition
+- migrer le manager vers Commander2
+- connecter le clavier !!!
+
+*************************************************
 The 'Manager' organize all the process 
 with the data in 'exercice', the 'generator' draw some notes, sends them to the 'collector'.
 for testing purposes, it manage also the 'renderer'.
