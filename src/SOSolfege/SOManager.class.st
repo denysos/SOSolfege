@@ -60,18 +60,18 @@ SOManager >> initialize [
 
 { #category : #'helper methods' }
 SOManager >> rendering [
-	renderer toTranscriptFromNoteSet: (collector getCollectedDrawAndTry) aDraw 
+	self subclassResponsibility
+]
+
+{ #category : #'as yet unclassified' }
+SOManager >> runExercice: anExercice [
+	| aNoteSet |
+	aNoteSet := self generateNoteSetFrom: anExercice.
+	self sendToCollector: aNoteSet.
+	self rendering
 ]
 
 { #category : #'helper methods' }
 SOManager >> sendToCollector: aNoteSet [
 	collector addNewDraw: aNoteSet
-]
-
-{ #category : #'as yet unclassified' }
-SOManager >> singleDrawFrom: anExercice [
-	| aNoteSet |
-	aNoteSet := self generateNoteSetFrom: anExercice.
-	self sendToCollector: aNoteSet.
-	self rendering
 ]

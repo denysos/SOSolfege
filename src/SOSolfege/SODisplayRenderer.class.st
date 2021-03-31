@@ -10,6 +10,11 @@ Class {
 	#category : #'SOSolfege-core'
 }
 
+{ #category : #'as yet unclassified' }
+SODisplayRenderer >> morphFromNoteSet: aNoteSet [
+	self shouldBeImplemented
+]
+
 { #category : #'basic tests' }
 SODisplayRenderer >> toTranscriptFromNoteSet: aNoteSet [
 	aNoteSet
