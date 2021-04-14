@@ -14,56 +14,75 @@ Class {
 	#instVars : [
 		'scoreMorph'
 	],
-	#classInstVars : [
-		'NotesModel',
-		'LinesModel',
-		'SupLinesModel',
-		'NotesMorphDict',
-		'SupLinesMorphDict',
-		'ScoreMorph',
+	#classVars : [
 		'H',
 		'L',
 		'LineGap',
 		'LineLength',
-		'SupLineLength'
+		'LinesModel',
+		'NoteSize',
+		'NotesModel',
+		'NotesMorphDict',
+		'ScoreMorph',
+		'ScoreSlotsPosition',
+		'SlotGap',
+		'SupLineLength',
+		'SupLinesModel',
+		'SupLinesMorphDict'
 	],
 	#category : #'SOSolfege-core'
 }
 
+{ #category : #'as yet unclassified' }
+SODisplayRenderer class >> computeSlotsPositionOn: aCollectionOfInteger [
+	| scoreSlotsPosition |
+	scoreSlotsPosition := OrderedCollection new.
+	aCollectionOfInteger
+		do: [ :eachSlot | 
+			| position |
+			position := eachSlot * SlotGap.
+			scoreSlotsPosition add: ((L // 2) @ position) ].
+	scoreSlotsPosition sort: [ :a :b | a > b ].
+	^ scoreSlotsPosition
+]
+
 { #category : #'class initialization' }
 SODisplayRenderer class >> initialize [
-	H := 200.
+	H := 210.
 	L := 150.
-	LineGap := (H / 20) rounded asInteger.
-	LineLength := (L * 0.90) rounded asInteger.
+	SlotGap := (H // 30) .
+	LineGap := SlotGap * 2 .
+	NoteSize := (LineGap * 1.5) rounded asInteger @ LineGap.
+	LineLength := (L * 0.80) rounded asInteger.
 	SupLineLength := (L * 0.10) rounded asInteger.
-	ScoreMorph := Morph
-		newBounds: (0 @ 0 extent: L @ H)
+	ScoreMorph := Morph new
+		extent: L @ H;
 		color: Color white.
 	NotesModel := Interval from: 1 to: 29 by: 1.
+	ScoreSlotsPosition := self computeSlotsPositionOn: NotesModel.
 	NotesMorphDict := Dictionary new.
 	LinesModel := #(5 7 9 11 13 17 19 21 23 25) asOrderedCollection.
 	SupLinesModel := #(1 3 15 27 29) asOrderedCollection.
 	SupLinesMorphDict := Dictionary new.
-	self makeLinesMorph.
-	self makeSupLinesMorph.
-	self makeNotesMorph.
+	self makeLinesMorphOn: ScoreMorph  .
+"	self makeSupLinesMorph.
+	self makeNotesMorph"
 ]
 
 { #category : #'as yet unclassified' }
-SODisplayRenderer class >> makeLinesMorph [
-"inverser l'ordre des lignes !
-la ligne 1 est la ligne du bas !!!"
+SODisplayRenderer class >> makeLinesMorphOn: aScoreMorph [
 	LinesModel
 		do: [ :aLineIndex | 
 			| aNewLine linePosition |
-			linePosition := aLineIndex * LineGap.
+			linePosition := ScoreSlotsPosition at: aLineIndex.
 			aNewLine := LineMorph
-				from: (L * 0.1) rounded asInteger @ linePosition
-				to: (L * 0.9) rounded asInteger @ linePosition
+				from: 0 @ 0
+				to: LineLength @ 0
 				color: Color black
 				width: 1.
-			ScoreMorph addMorph: aNewLine ]
+			"aNewLine center: (L // 2) @ linePosition."
+			aNewLine center: linePosition.
+			aScoreMorph addMorph: aNewLine ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -72,14 +91,14 @@ SODisplayRenderer class >> makeNotesMorph [
 	NotesModel
 		do: [ :aNoteIndex | 
 			| aNewNote notePosition |
-			notePosition := aNoteIndex * LineGap.
+			notePosition := aNoteIndex * SlotGap.
 			aNewNote := EllipseMorph
 				newBounds:
 					((L * 0.45) rounded asInteger
-						@ (notePosition - (LineGap / 2)) rounded asInteger
+						@ (notePosition - (SlotGap / 2)) rounded asInteger
 						extent:
 							(L * 0.55) rounded asInteger
-								@ (notePosition + (LineGap / 2)) rounded asInteger)
+								@ (notePosition + (SlotGap / 2)) rounded asInteger)
 				color: Color black.
 			ScoreMorph addMorph: aNewNote.
 			NotesMorphDict at: aNoteIndex put: aNewNote ]
@@ -105,7 +124,7 @@ SODisplayRenderer class >> makeSupLinesMorph [
 	SupLinesModel
 		do: [ :aLineIndex | 
 			| aNewLine linePosition |
-			linePosition := aLineIndex * LineGap.
+			linePosition := aLineIndex * SlotGap.
 			aNewLine := LineMorph
 				from: (L * 0.4) rounded asInteger @ linePosition
 				to: (L * 0.6) rounded asInteger @ linePosition
@@ -115,9 +134,30 @@ SODisplayRenderer class >> makeSupLinesMorph [
 			SupLinesMorphDict at: aLineIndex put: aNewLine ]
 ]
 
+{ #category : #accessing }
+SODisplayRenderer class >> scoreMorph [
+	^ ScoreMorph
+]
+
+{ #category : #adding }
+SODisplayRenderer >> addNote: aRank on: aScoreMorph [
+	| aNoteMorph |
+	aNoteMorph := EllipseMorph new
+		position: 0 @ 0;
+		extent: NoteSize;
+		color: Color black.
+	aScoreMorph addMorph: aNoteMorph.
+	"aNoteMorph center: (L // 2) @ (ScoreSlotsPosition at: aRank)"
+	aNoteMorph center: (ScoreSlotsPosition at: aRank)
+]
+
 { #category : #'as yet unclassified' }
 SODisplayRenderer >> morphFromNoteSet: aNoteSet [
-	self shouldBeImplemented
+	| aScoreMorph |
+	aScoreMorph := ScoreMorph copy .
+	aNoteSet
+		ranksDo: [ :eachRank | self addNote: eachRank on: aScoreMorph ].
+	^ aScoreMorph
 ]
 
 { #category : #rendering }
