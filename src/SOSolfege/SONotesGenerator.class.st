@@ -48,7 +48,7 @@ SONotesGenerator >> drawNotesFromNotesToLearn [
 	| chord |
 	chord := SOChord new.
 	notesNumberToDraw
-		timesRepeat: [ chord addANote: notesToLearn atRandom ].
+		timesRepeat: [ chord addANoteWithRank: notesToLearn atRandom ].
 	^ chord
 ]
 
