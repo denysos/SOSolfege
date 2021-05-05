@@ -7,7 +7,8 @@ Class {
 	#instVars : [
 		'name',
 		'rank',
-		'origin'
+		'color',
+		'positionShift'
 	],
 	#classVars : [
 		'FullNotesCollection',
@@ -42,14 +43,70 @@ SONoteData >> < aNoteData [
 	^ self rank < aNoteData rank
 ]
 
+{ #category : #comparing }
+SONoteData >> = aNoteData [
+	^ self rank = aNoteData rank and: [ self origin = aNoteData origin ]
+]
+
+{ #category : #converting }
+SONoteData >> asGeneratorNote [
+	^ SOGeneratorNote newFrom: self
+]
+
+{ #category : #converting }
+SONoteData >> asKeyboardNote [
+	^ SOKeyboardNote newFrom: self
+]
+
+{ #category : #accessing }
+SONoteData >> color [
+	^ color
+]
+
+{ #category : #accessing }
+SONoteData >> color: anObject [
+	color := anObject
+]
+
+{ #category : #initialization }
+SONoteData >> defaultColor [
+	^ Color black
+]
+
+{ #category : #comparing }
+SONoteData >> hash [
+	^ self rank hash bitXor: self origin hash
+]
+
+{ #category : #initialization }
+SONoteData >> initialize [
+	color := self defaultColor.
+	positionShift := false
+]
+
 { #category : #testing }
 SONoteData >> isNextTo: aNoteData [
 	^ (self rank - aNoteData rank) abs = 1
 ]
 
+{ #category : #accessing }
+SONoteData >> match: aNoteData [
+	^ self rank = aNoteData rank and: [ self origin ~= aNoteData origin ]
+]
+
 { #category : #'accessing colors' }
 SONoteData >> matchColor [
-	^ Color blue 
+	^ Color green
+]
+
+{ #category : #accessing }
+SONoteData >> name [
+	^ name
+]
+
+{ #category : #accessing }
+SONoteData >> origin [
+	^ nil
 ]
 
 { #category : #accessing }

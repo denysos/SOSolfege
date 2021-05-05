@@ -28,6 +28,19 @@ SONoteSetTest >> testIsEmpty [
 ]
 
 { #category : #tests }
+SONoteSetTest >> testRemoveDuplicate [
+	| ranksWithDup ranksNoDup aNoteSet aNoteSetRanks |
+	ranksWithDup := #(1 3 3 5 7) asOrderedCollection.
+	ranksNoDup := ranksWithDup copy removeDuplicates.
+	aNoteSetRanks := OrderedCollection new.
+	aNoteSet := SONoteSet new.
+	ranksWithDup do: [ :each | aNoteSet addANoteWithRank: each ].
+	aNoteSet ranksDo: [ :each | aNoteSetRanks add: each rank ].
+	self deny: ranksNoDup equals: ranksWithDup.
+	self assert: ranksNoDup equals: aNoteSetRanks
+]
+
+{ #category : #tests }
 SONoteSetTest >> testSubsetAtRandomWith [
 	| noteSetInit noteSetCreated size |
 	noteSetInit := SONoteSet newFullNoteSet.

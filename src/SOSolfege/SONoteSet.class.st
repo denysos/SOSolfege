@@ -81,12 +81,22 @@ SONoteSet class >> newGKeyNoteSet [
 
 { #category : #adding }
 SONoteSet >> addANote: aNoteData [
-	noteChoice add: aNoteData
+	noteChoice add: aNoteData.
+	self removeDuplicates
 ]
 
 { #category : #adding }
 SONoteSet >> addANoteWithRank: aRank [
-	noteChoice add: (SONoteData withRank: aRank)
+	noteChoice add: (SONoteData withRank: aRank).
+	self removeDuplicates
+]
+
+{ #category : #'as yet unclassified' }
+SONoteSet >> applyRule: aBlockWith2Args [
+	"noteChoice inject: nil into: aBlockWith2Args"
+
+	noteChoice doAdjacentPairs: aBlockWith2Args.
+	"self ruleToSetNoteColor: noteChoice "
 ]
 
 { #category : #initialization }
@@ -115,6 +125,11 @@ SONoteSet >> printOn: aStream [
 { #category : #enumerating }
 SONoteSet >> ranksDo: aBlockClosure [
 	noteChoice do: aBlockClosure
+]
+
+{ #category : #private }
+SONoteSet >> removeDuplicates [
+	noteChoice removeDuplicates
 ]
 
 { #category : #accessing }

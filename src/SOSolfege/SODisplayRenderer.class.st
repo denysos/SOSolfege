@@ -152,6 +152,18 @@ SODisplayRenderer >> addNote: aRank on: aScoreMorph [
 ]
 
 { #category : #'as yet unclassified' }
+SODisplayRenderer >> assessDisplayColors: aNoteSet [
+	aNoteSet applyRule: self ruleToSetNoteColor
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayRenderer >> assessPositionShift: aNoteSet [
+	"TODO"
+
+	
+]
+
+{ #category : #'as yet unclassified' }
 SODisplayRenderer >> morphFromNoteSet: aNoteSet [
 	| aScoreMorph |
 	aScoreMorph := ScoreMorph copy .
@@ -163,6 +175,20 @@ SODisplayRenderer >> morphFromNoteSet: aNoteSet [
 { #category : #rendering }
 SODisplayRenderer >> renderScore [
 	self shouldBeImplemented
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayRenderer >> ruleToSetNoteColor [
+	^ [ :prevNote :nextNote | 
+			prevNote
+				ifNotNil: [ (prevNote match: nextNote)
+						ifTrue: [ nextNote color: nextNote matchColor.
+							prevNote color: prevNote matchColor ] ] ]
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayRenderer >> ruleToShiftNotePosition [
+	^ [  ]
 ]
 
 { #category : #'basic tests' }
