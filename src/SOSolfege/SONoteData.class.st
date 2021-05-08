@@ -12,7 +12,8 @@ Class {
 	],
 	#classVars : [
 		'FullNotesCollection',
-		'MaxRank'
+		'MaxRank',
+		'SuppLinesSlotsForANote'
 	],
 	#category : #'SOSolfege-core'
 }
@@ -30,7 +31,12 @@ SONoteData class >> allNotesOnScore [
 { #category : #'class initialization' }
 SONoteData class >> initialize [
 	FullNotesCollection := self allNotesOnScore.
-	MaxRank := FullNotesCollection size
+	MaxRank := FullNotesCollection size.
+	SuppLinesSlotsForANote := {(1 -> #(1 3)).
+	(3 -> #(3)).
+	(15 -> #(15)).
+	(27 -> #(27)).
+	(29 -> #(27 29))} asDictionary
 ]
 
 { #category : #'as yet unclassified' }
@@ -50,12 +56,12 @@ SONoteData >> = aNoteData [
 
 { #category : #converting }
 SONoteData >> asGeneratorNote [
-	^ SOGeneratorNote newFrom: self
+	^ (SOGeneratorNote newFrom: self) initialize
 ]
 
 { #category : #converting }
 SONoteData >> asKeyboardNote [
-	^ SOKeyboardNote newFrom: self
+	^ (SOKeyboardNote newFrom: self) initialize
 ]
 
 { #category : #accessing }
@@ -80,6 +86,7 @@ SONoteData >> hash [
 
 { #category : #initialization }
 SONoteData >> initialize [
+	super initialize.
 	color := self defaultColor.
 	positionShift := false
 ]
@@ -110,6 +117,11 @@ SONoteData >> origin [
 ]
 
 { #category : #accessing }
+SONoteData >> positionShift [
+	^ positionShift
+]
+
+{ #category : #accessing }
 SONoteData >> rank [
 	^ rank
 ]
@@ -118,4 +130,16 @@ SONoteData >> rank [
 SONoteData >> rank: aRank [
 	rank := aRank.
 	name := FullNotesCollection at: aRank
+]
+
+{ #category : #'as yet unclassified' }
+SONoteData >> shiftPosition [
+	" the note is moved on the right on the score to make it easier to read !"
+
+	positionShift := true
+]
+
+{ #category : #'as yet unclassified' }
+SONoteData >> suppLines [
+	^ SuppLinesSlotsForANote at: self rank ifAbsent: [ #() ]
 ]

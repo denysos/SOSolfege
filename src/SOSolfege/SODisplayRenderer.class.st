@@ -54,7 +54,7 @@ SODisplayRenderer class >> initialize [
 	LineGap := SlotGap * 2 .
 	NoteSize := (LineGap * 1.5) rounded asInteger @ LineGap.
 	LineLength := (L * 0.80) rounded asInteger.
-	SupLineLength := (L * 0.10) rounded asInteger.
+	SupLineLength := (L * 0.20) rounded asInteger.
 	ScoreMorph := Morph new
 		extent: L @ H;
 		color: Color white.
@@ -140,15 +140,16 @@ SODisplayRenderer class >> scoreMorph [
 ]
 
 { #category : #adding }
-SODisplayRenderer >> addNote: aRank on: aScoreMorph [
+SODisplayRenderer >> addNote: aNote on: aScoreMorph [
 	| aNoteMorph |
 	aNoteMorph := EllipseMorph new
 		position: 0 @ 0;
 		extent: NoteSize;
-		color: Color black.
+		color: aNote color;
+		setBalloonText: aNote name .
 	aScoreMorph addMorph: aNoteMorph.
 	"aNoteMorph center: (L // 2) @ (ScoreSlotsPosition at: aRank)"
-	aNoteMorph center: (ScoreSlotsPosition at: aRank)
+	aNoteMorph center: (ScoreSlotsPosition at: aNote rank)
 ]
 
 { #category : #'as yet unclassified' }
@@ -158,17 +159,33 @@ SODisplayRenderer >> assessDisplayColors: aNoteSet [
 
 { #category : #'as yet unclassified' }
 SODisplayRenderer >> assessPositionShift: aNoteSet [
-	"TODO"
+	aNoteSet applyRule: self ruleToShiftNotePosition
+]
 
-	
+{ #category : #'as yet unclassified' }
+SODisplayRenderer >> makeLinesSuppMorphFor: aNoteData On: aScoreMorph [
+	aNoteData suppLines
+		do: [ :rank | 
+			| aNewLine linePosition |
+			linePosition := ScoreSlotsPosition at: rank.
+			aNewLine := LineMorph
+				from: 0 @ 0
+				to: SupLineLength @ 0
+				color: Color black
+				width: 1.
+			"aNewLine center: (L // 2) @ linePosition."
+			aNewLine center: linePosition.
+			aScoreMorph addMorph: aNewLine ]
 ]
 
 { #category : #'as yet unclassified' }
 SODisplayRenderer >> morphFromNoteSet: aNoteSet [
 	| aScoreMorph |
-	aScoreMorph := ScoreMorph copy .
+	aScoreMorph := ScoreMorph copy.
 	aNoteSet
-		ranksDo: [ :eachRank | self addNote: eachRank on: aScoreMorph ].
+		ranksDo: [ :eachNote | 
+			self addNote: eachNote on: aScoreMorph.
+			self makeLinesSuppMorphFor: eachNote On: aScoreMorph ].
 	^ aScoreMorph
 ]
 
@@ -179,16 +196,23 @@ SODisplayRenderer >> renderScore [
 
 { #category : #'as yet unclassified' }
 SODisplayRenderer >> ruleToSetNoteColor [
-	^ [ :prevNote :nextNote | 
+	^ [ :aNoteChoice | 
+	aNoteChoice
+		doAdjacentPairs: [ :prevNote :nextNote | 
 			prevNote
 				ifNotNil: [ (prevNote match: nextNote)
 						ifTrue: [ nextNote color: nextNote matchColor.
-							prevNote color: prevNote matchColor ] ] ]
+							prevNote color: prevNote matchColor ] ] ] ]
 ]
 
 { #category : #'as yet unclassified' }
 SODisplayRenderer >> ruleToShiftNotePosition [
-	^ [  ]
+	^ [ :aNoteChoice | 
+	aNoteChoice
+		doAdjacentPairs: [ :prevNote :nextNote | 
+			prevNote
+				ifNotNil: [ (prevNote isNextTo: nextNote)
+						ifTrue: [ nextNote shiftPosition ] ] ] ]
 ]
 
 { #category : #'basic tests' }

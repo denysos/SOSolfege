@@ -92,11 +92,12 @@ SONoteSet >> addANoteWithRank: aRank [
 ]
 
 { #category : #'as yet unclassified' }
-SONoteSet >> applyRule: aBlockWith2Args [
+SONoteSet >> applyRule: aBlock [
 	"noteChoice inject: nil into: aBlockWith2Args"
 
-	noteChoice doAdjacentPairs: aBlockWith2Args.
-	"self ruleToSetNoteColor: noteChoice "
+	"noteChoice doAdjacentPairs: aBlockWith2Args."
+
+	noteChoice in: aBlock
 ]
 
 { #category : #initialization }
