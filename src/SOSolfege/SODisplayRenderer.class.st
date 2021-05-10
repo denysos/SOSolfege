@@ -184,8 +184,8 @@ SODisplayRenderer >> morphFromNoteSet: aNoteSet [
 	aScoreMorph := ScoreMorph copy.
 	aNoteSet
 		ranksDo: [ :eachNote | 
-			self addNote: eachNote on: aScoreMorph.
-			self makeLinesSuppMorphFor: eachNote On: aScoreMorph ].
+			self makeLinesSuppMorphFor: eachNote On: aScoreMorph.
+			self addNote: eachNote on: aScoreMorph ].
 	^ aScoreMorph
 ]
 
