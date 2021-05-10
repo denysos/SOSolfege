@@ -6,8 +6,10 @@ Class {
 
 { #category : #rendering }
 SOSingleDrawToScore >> rendering [
-	Transcript
+	"	Transcript
 		show: 'coucou';
 		cr.
-	Morph new openInWorld
+	Morph new openInWorld"
+
+	renderer renderScoreFrom: collector
 ]
