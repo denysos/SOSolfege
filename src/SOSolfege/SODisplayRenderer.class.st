@@ -194,6 +194,19 @@ SODisplayRenderer >> renderScore [
 	self shouldBeImplemented
 ]
 
+{ #category : #rendering }
+SODisplayRenderer >> renderScoreFrom: aCollector [
+	"self shouldBeImplemented"
+
+	| noteSetToRender |
+	noteSetToRender := SONoteSet new.
+	aCollector getCollectedDrawAndTry aTry
+		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
+	aCollector getCollectedDrawAndTry aDraw
+		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
+	self morphFromNoteSet: noteSetToRender
+]
+
 { #category : #'as yet unclassified' }
 SODisplayRenderer >> ruleToSetNoteColor [
 	^ [ :aNoteChoice | 
