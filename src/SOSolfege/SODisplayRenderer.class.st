@@ -146,10 +146,14 @@ SODisplayRenderer >> addNote: aNote on: aScoreMorph [
 		position: 0 @ 0;
 		extent: NoteSize;
 		color: aNote color;
-		setBalloonText: aNote name .
+		setBalloonText: aNote name.
 	aScoreMorph addMorph: aNoteMorph.
 	"aNoteMorph center: (L // 2) @ (ScoreSlotsPosition at: aRank)"
-	aNoteMorph center: (ScoreSlotsPosition at: aNote rank)
+	aNoteMorph
+		center:
+			(aNote positionShift
+				ifFalse: [ ScoreSlotsPosition at: aNote rank ]
+				ifTrue: [ (ScoreSlotsPosition at: aNote rank) + (16 @ 0) ])
 ]
 
 { #category : #'as yet unclassified' }
@@ -196,15 +200,17 @@ SODisplayRenderer >> renderScore [
 
 { #category : #rendering }
 SODisplayRenderer >> renderScoreFrom: aCollector [
-	"self shouldBeImplemented"
-
 	| noteSetToRender |
+	scoreMorph delete.
 	noteSetToRender := SONoteSet new.
 	aCollector getCollectedDrawAndTry aTry
 		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
 	aCollector getCollectedDrawAndTry aDraw
 		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
-	self morphFromNoteSet: noteSetToRender
+	self assessDisplayColors: noteSetToRender.
+	self assessPositionShift: noteSetToRender.
+	scoreMorph := self morphFromNoteSet: noteSetToRender.
+	scoreMorph openInWorld
 ]
 
 { #category : #'as yet unclassified' }
@@ -224,7 +230,7 @@ SODisplayRenderer >> ruleToShiftNotePosition [
 	aNoteChoice
 		doAdjacentPairs: [ :prevNote :nextNote | 
 			prevNote
-				ifNotNil: [ (prevNote isNextTo: nextNote)
+				ifNotNil: [ ((prevNote isNextTo: nextNote) and: [ prevNote isNotShifted ])
 						ifTrue: [ nextNote shiftPosition ] ] ] ]
 ]
 

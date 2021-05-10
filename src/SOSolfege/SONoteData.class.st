@@ -96,6 +96,16 @@ SONoteData >> isNextTo: aNoteData [
 	^ (self rank - aNoteData rank) abs = 1
 ]
 
+{ #category : #testing }
+SONoteData >> isNotShifted [
+	^ positionShift not
+]
+
+{ #category : #testing }
+SONoteData >> isShifted [
+	^ positionShift
+]
+
 { #category : #accessing }
 SONoteData >> match: aNoteData [
 	^ self rank = aNoteData rank and: [ self origin ~= aNoteData origin ]
