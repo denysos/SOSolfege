@@ -133,6 +133,17 @@ SONoteSet >> removeDuplicates [
 	noteChoice removeDuplicates
 ]
 
+{ #category : #initialization }
+SONoteSet >> setOriginTo: aSelector [
+	"perform: aSelector"
+
+	| aNewNoteSet |
+	aNewNoteSet := SONoteSet new.
+	self
+		ranksDo: [ :eachNote | aNewNoteSet addANote: (eachNote perform: aSelector) ].
+	^ aNewNoteSet
+]
+
 { #category : #accessing }
 SONoteSet >> size [
 	^ noteChoice size
