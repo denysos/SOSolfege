@@ -51,7 +51,7 @@ SODisplayCollector >> addNewDraw: aNoteSet [
 { #category : #adding }
 SODisplayCollector >> addNewTry: aNoteSet [
 	| aNewNoteSet |
-	self resetDisplay.
+	"self resetDisplay."
 	"self setOriginTo: #asKeyboardNote for: aNoteSet."
 	aNewNoteSet := aNoteSet setOriginTo: #asKeyboardNote.
 	toDisplay aTry: aNewNoteSet.

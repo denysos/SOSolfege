@@ -1,8 +1,10 @@
 Class {
 	#name : #SODemoDrawAndKB,
-	#superclass : #SOSingleDrawToScore,
+	#superclass : #Object,
 	#instVars : [
-		'keyboard'
+		'keyboard',
+		'generator',
+		'timeBeforeKBNote'
 	],
 	#category : #'SOSolfege-app'
 }
@@ -10,22 +12,21 @@ Class {
 { #category : #initialization }
 SODemoDrawAndKB >> initialize [
 	super initialize.
-	keyboard := SOKeyBoardSimulator new
+	timeBeforeKBNote := 1.
+	generator := SOSingleDrawToScore new.
+	keyboard := SOKeyBoardSimulator new.
+	keyboard collector: generator collector.
+	keyboard renderer: generator renderer
 ]
 
 { #category : #'as yet unclassified' }
 SODemoDrawAndKB >> runExercice: anExercice [
 	| aNoteSet aNoteSetFromKB |
-	aNoteSet := super generateNoteSetFrom: anExercice.
-	super sendToCollector: aNoteSet.
-	super rendering.
-	(Delay forSeconds: 2) wait.
-	aNoteSetFromKB := self generateNoteSetFrom: anExercice.
-	self sendToCollector: aNoteSetFromKB.
-	self rendering
-]
-
-{ #category : #'helper methods' }
-SODemoDrawAndKB >> sendToCollector: aNoteSet [
-	collector addNewTry: aNoteSet
+	aNoteSet := generator generateNoteSetFrom: anExercice.
+	generator sendToCollector: aNoteSet.
+	generator rendering.
+	(Delay forSeconds: timeBeforeKBNote) wait.
+	aNoteSetFromKB := keyboard generateNoteSetFrom: anExercice.
+	keyboard sendToCollector: aNoteSetFromKB.
+	keyboard rendering
 ]

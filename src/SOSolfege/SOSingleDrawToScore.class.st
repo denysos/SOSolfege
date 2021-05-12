@@ -4,6 +4,16 @@ Class {
 	#category : #'SOSolfege-app'
 }
 
+{ #category : #accessing }
+SOSingleDrawToScore >> collector [
+	^ collector
+]
+
+{ #category : #accessing }
+SOSingleDrawToScore >> renderer [
+	^ renderer
+]
+
 { #category : #rendering }
 SOSingleDrawToScore >> rendering [
 	"	Transcript
