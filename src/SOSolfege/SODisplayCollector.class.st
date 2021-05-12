@@ -40,14 +40,21 @@ Class {
 
 { #category : #adding }
 SODisplayCollector >> addNewDraw: aNoteSet [
+	| aNewNoteSet |
 	self resetDisplay.
-	toDisplay aDraw: aNoteSet.
+	"self setOriginTo: #asGeneratorNote for: aNoteSet."
+	aNewNoteSet := aNoteSet setOriginTo: #asGeneratorNote.
+	toDisplay aDraw: aNewNoteSet.
 	self sendUpdatedFlag
 ]
 
 { #category : #adding }
 SODisplayCollector >> addNewTry: aNoteSet [
-	toDisplay aTry: aNoteSet.
+	| aNewNoteSet |
+	self resetDisplay.
+	"self setOriginTo: #asKeyboardNote for: aNoteSet."
+	aNewNoteSet := aNoteSet setOriginTo: #asKeyboardNote.
+	toDisplay aTry: aNewNoteSet.
 	self sendUpdatedFlag
 ]
 
@@ -93,4 +100,18 @@ SODisplayCollector >> resetDisplay [
 { #category : #'as yet unclassified' }
 SODisplayCollector >> sendUpdatedFlag [
 	^ true
+]
+
+{ #category : #adding }
+SODisplayCollector >> setOrigin: aNoteSet [
+	aNoteSet ranksDo: [ :eachNote | eachNote asGeneratorNote ]
+]
+
+{ #category : #adding }
+SODisplayCollector >> setOriginTo: aSelector for: aNoteSet [
+	| aNewNoteSet |
+	aNewNoteSet := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNewNoteSet addANote: (eachNote perform: aSelector) ].
+	^ aNewNoteSet
 ]

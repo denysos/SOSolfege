@@ -166,6 +166,11 @@ SODisplayRenderer >> assessPositionShift: aNoteSet [
 	aNoteSet applyRule: self ruleToShiftNotePosition
 ]
 
+{ #category : #initialization }
+SODisplayRenderer >> initialize [
+	scoreMorph := ScoreMorph
+]
+
 { #category : #'as yet unclassified' }
 SODisplayRenderer >> makeLinesSuppMorphFor: aNoteData On: aScoreMorph [
 	aNoteData suppLines
@@ -194,11 +199,6 @@ SODisplayRenderer >> morphFromNoteSet: aNoteSet [
 ]
 
 { #category : #rendering }
-SODisplayRenderer >> renderScore [
-	self shouldBeImplemented
-]
-
-{ #category : #rendering }
 SODisplayRenderer >> renderScoreFrom: aCollector [
 	| noteSetToRender |
 	scoreMorph delete.
@@ -211,6 +211,7 @@ SODisplayRenderer >> renderScoreFrom: aCollector [
 	self assessPositionShift: noteSetToRender.
 	scoreMorph := self morphFromNoteSet: noteSetToRender.
 	scoreMorph openInWorld
+	"scoreMorph openInWindow"
 ]
 
 { #category : #'as yet unclassified' }

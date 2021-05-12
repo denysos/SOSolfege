@@ -41,6 +41,22 @@ SONoteSetTest >> testRemoveDuplicate [
 ]
 
 { #category : #tests }
+SONoteSetTest >> testSetOriginTo [
+	| aNoteSet aNoteSetFromGenerator aNoteSetFromKeyboard |
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 1;
+		addANoteWithRank: 2;
+		addANoteWithRank: 3;
+		yourself.
+	aNoteSetFromGenerator := aNoteSet setOriginTo: #asGeneratorNote.
+	aNoteSetFromKeyboard := aNoteSet setOriginTo: #asKeyboardNote.
+	aNoteSetFromGenerator
+		ranksDo: [ :eachNote | self assert: eachNote class equals: SOGeneratorNote ].
+	aNoteSetFromKeyboard
+		ranksDo: [ :eachNote | self assert: eachNote class equals: SOKeyboardNote ]
+]
+
+{ #category : #tests }
 SONoteSetTest >> testSubsetAtRandomWith [
 	| noteSetInit noteSetCreated size |
 	noteSetInit := SONoteSet newFullNoteSet.
