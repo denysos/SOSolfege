@@ -19,6 +19,21 @@ SODisplayRendererTest >> addKeyboardNotes: notesFromKeyboard to: aNoteSet [
 		do: [ :each | aNoteSet addANote: (SOKeyboardNote withRank: each) ]
 ]
 
+{ #category : #'helper methods' }
+SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings [
+	| infoTestMorph infoMorph |
+	infoMorph := Morph new extent: 200 @ 300.
+	infoTestMorph := AlignmentMorph newColumn.
+	aCollectionOfStrings reversed
+		do: [ :info | 
+			infoTestMorph
+				addMorph: ((StringMorph contents: info) backgroundColor: Color blue) ].
+	infoMorph addMorph: infoTestMorph.
+	infoMorph
+		position: 0 @ 300;
+		openInWorld
+]
+
 { #category : #test }
 SODisplayRendererTest >> testAssessDisplayColors [
 	"when 2 notes from different origin are at the same place on the score, their match, and the color of the note displayed is changed to green"
@@ -70,4 +85,39 @@ SODisplayRendererTest >> testAssessPositionShift [
 				ifTrue: [ self deny: each positionShift ].	"10 not next to 6, no position shift"
 			each rank = 11
 				ifTrue: [ self assert: each positionShift ]	"11 next to 10, even if origin different" ]
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayRendererTest >> testRightShiftWhenNotesMatch [
+	| dr aNoteSet aNoteSetFromKB aNoteSetFromGen disp aCollector infoTest |
+	"20"
+	"25"
+	"26"
+	"17"
+	"21"
+	"26"
+	infoTest := #('3 notes from gen : d3, e3, b3' '3 notes from kb : d3, e3, e4' 'd3 and e3 match -> color change to green' 'd3 and e3 are adjacent -> shift' 'Score must display 4 notes : ' 'd3 : green' 'e3 : green with shift to the right' 'b3 : black' 'e4 : red')
+		asOrderedCollection.
+	dr := SODisplayRenderer new.
+	aCollector := SODisplayCollector new.
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 21;
+		yourself.
+	aNoteSetFromGen := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 24;
+		yourself.
+	aNoteSetFromKB := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+	aCollector addNewDraw: aNoteSetFromGen.
+	aCollector addNewTry: aNoteSetFromKB.
+	dr renderScoreFrom: aCollector.
+	self displayInfoTest: infoTest
 ]

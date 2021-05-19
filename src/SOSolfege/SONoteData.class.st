@@ -94,6 +94,8 @@ SONoteData >> initialize [
 { #category : #testing }
 SONoteData >> isNextTo: aNoteData [
 	^ (self rank - aNoteData rank) abs = 1
+
+	"^ (self rank - aNoteData rank) abs <= 1"
 ]
 
 { #category : #testing }

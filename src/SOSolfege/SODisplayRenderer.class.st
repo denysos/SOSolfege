@@ -208,6 +208,7 @@ SODisplayRenderer >> renderScoreFrom: aCollector [
 	aCollector getCollectedDrawAndTry aDraw
 		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
 	self assessDisplayColors: noteSetToRender.
+	noteSetToRender removeDuplicates.
 	self assessPositionShift: noteSetToRender.
 	scoreMorph := self morphFromNoteSet: noteSetToRender.
 	scoreMorph openInWorld
@@ -227,11 +228,17 @@ SODisplayRenderer >> ruleToSetNoteColor [
 
 { #category : #'as yet unclassified' }
 SODisplayRenderer >> ruleToShiftNotePosition [
+	"a note is shifted if :
+- prevNote and nextNote have adjacent ranks
+- prevNote and nextNote have same ranks (different origin because noDups)
+   and prevNote is shifted already ! "
+
 	^ [ :aNoteChoice | 
 	aNoteChoice
 		doAdjacentPairs: [ :prevNote :nextNote | 
 			prevNote
-				ifNotNil: [ ((prevNote isNextTo: nextNote) and: [ prevNote isNotShifted ])
+				ifNotNil: [ (((prevNote isNextTo: nextNote) and: [ prevNote isNotShifted ])
+						or: [ prevNote rank = nextNote rank and: [ prevNote isShifted ] ])
 						ifTrue: [ nextNote shiftPosition ] ] ] ]
 ]
 
