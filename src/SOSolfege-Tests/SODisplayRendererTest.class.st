@@ -21,17 +21,120 @@ SODisplayRendererTest >> addKeyboardNotes: notesFromKeyboard to: aNoteSet [
 
 { #category : #'helper methods' }
 SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings [
+	"DEPRECATED, TO BE REMOVED WHEN displayInfoTest:forScore: FULLY IMPLEMENTED"
+
 	| infoTestMorph infoMorph |
+	"self assert: false."
 	infoMorph := Morph new extent: 200 @ 300.
 	infoTestMorph := AlignmentMorph newColumn.
+	"	infoTestMorph
+		addMorph:
+			((SimpleButtonMorph newWithLabel: 'Validation')
+				target: self;
+				actionSelector: #assert:;
+				arguments: (Array with: true));
+		addMorph: (SimpleButtonMorph newWithLabel: 'Failed')."
 	aCollectionOfStrings reversed
 		do: [ :info | 
 			infoTestMorph
 				addMorph: ((StringMorph contents: info) backgroundColor: Color blue) ].
 	infoMorph addMorph: infoTestMorph.
-	infoMorph
+	(Smalltalk ui theme
+		newPluggableDialogWindowIn: World
+		title: 'a test'
+		for: infoMorph) openModal
+	"	infoMorph
 		position: 0 @ 300;
-		openInWorld
+		openInWorld"
+]
+
+{ #category : #'helper methods' }
+SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings forScore: aMorph [
+	"beware of the message window : test too long, close and go on !"
+
+	| infoTestMorph infoMorph |
+	infoMorph := Morph new extent: 200 @ 400.
+	infoTestMorph := AlignmentMorph newColumn.
+	infoTestMorph addMorph: aMorph.
+	aCollectionOfStrings reversed
+		do: [ :info | 
+			infoTestMorph
+				addMorph: ((StringMorph contents: info) backgroundColor: Color blue) ].
+	infoMorph addMorph: infoTestMorph.
+	(Smalltalk ui theme
+		newPluggableDialogWindowIn: World
+		title: 'a test'
+		for: infoMorph) openModal
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayRendererTest >> testAdjacentNotes3by3 [
+	| dr aNoteSet aNoteSetFromKB aNoteSetFromGen disp aCollector infoTest |
+	"20"
+	"25"
+	"26"
+	"17"
+	"21"
+	"26"
+	infoTest := #('3 notes from gen : d3, e3, b3' '3 notes from kb : d3, e3, e4' 'd3 and e3 match -> color change to green' 'd3 and e3 are adjacent -> shift' 'Score must display 4 notes : ' 'd3 : green' 'e3 : green with shift to the right' 'b3 : black' 'e4 : red')
+		asOrderedCollection.
+	dr := SODisplayRenderer new.
+	aCollector := SODisplayCollector new.
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 21;
+		yourself.
+	aNoteSetFromGen := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 24;
+		yourself.
+	aNoteSetFromKB := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+	aCollector addNewDraw: aNoteSetFromGen.
+	aCollector addNewTry: aNoteSetFromKB.
+	dr renderScoreFrom: aCollector.
+	self displayInfoTest: infoTest
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayRendererTest >> testAdjacentNotesShiftWithMatch [
+	| dr aNoteSet aNoteSetFromKB aNoteSetFromGen disp aCollector infoTest aScoreMorph |
+	"20"
+	"25"
+	"26"
+	"17"
+	"21"
+	"26"
+	infoTest := #('3 notes from gen : d3, e3, b3' '3 notes from kb : d3, e3, e4' 'd3 and e3 match -> color change to green' 'd3 and e3 are adjacent -> shift' 'Score must display 4 notes : ' 'd3 : green' 'e3 : green with shift to the right' 'b3 : black' 'e4 : red')
+		asOrderedCollection.
+	dr := SODisplayRenderer new.
+	aCollector := SODisplayCollector new.
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 21;
+		yourself.
+	aNoteSetFromGen := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 24;
+		yourself.
+	aNoteSetFromKB := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+	aCollector addNewDraw: aNoteSetFromGen.
+	aCollector addNewTry: aNoteSetFromKB.
+	aScoreMorph := dr renderScoreFrom: aCollector.
+	self displayInfoTest: infoTest forScore: aScoreMorph
 ]
 
 { #category : #test }
@@ -88,7 +191,7 @@ SODisplayRendererTest >> testAssessPositionShift [
 ]
 
 { #category : #'as yet unclassified' }
-SODisplayRendererTest >> testRightShiftWhenNotesMatch [
+SODisplayRendererTest >> testSuppLinesNotesOnAdjacentsLines [
 	| dr aNoteSet aNoteSetFromKB aNoteSetFromGen disp aCollector infoTest |
 	"20"
 	"25"

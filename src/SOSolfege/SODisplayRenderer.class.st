@@ -211,8 +211,14 @@ SODisplayRenderer >> renderScoreFrom: aCollector [
 	noteSetToRender removeDuplicates.
 	self assessPositionShift: noteSetToRender.
 	scoreMorph := self morphFromNoteSet: noteSetToRender.
-	scoreMorph openInWorld
+	^ scoreMorph
+	"scoreMorph openInWorld"
 	"scoreMorph openInWindow"
+]
+
+{ #category : #rendering }
+SODisplayRenderer >> renderScoreInWorldFrom: aCollector [
+	(self renderScoreFrom: aCollector) openInWorld
 ]
 
 { #category : #'as yet unclassified' }

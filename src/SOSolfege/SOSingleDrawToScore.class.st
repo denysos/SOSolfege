@@ -21,5 +21,7 @@ SOSingleDrawToScore >> rendering [
 		cr.
 	Morph new openInWorld"
 
-	renderer renderScoreFrom: collector
+	"	renderer renderScoreFrom: collector"
+
+	renderer renderScoreInWorldFrom: collector
 ]
