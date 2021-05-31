@@ -39,6 +39,11 @@ SONoteData class >> initialize [
 	(29 -> #(27 29))} asDictionary
 ]
 
+{ #category : #accessing }
+SONoteData class >> maxRank [
+	^ MaxRank
+]
+
 { #category : #'as yet unclassified' }
 SONoteData class >> withRank: aRank [
 	^ self new rank: aRank
