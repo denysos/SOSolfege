@@ -49,10 +49,9 @@ SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings [
 ]
 
 { #category : #'helper methods' }
-SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings forScore: aMorph description: aString [
-	"beware of the message window : test too long, close and go on !"
-
-	| infoTestMorph infoMorph uiValidTest testResult testProcess |
+SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings forScore: aMorph [
+	| infoTestMorph infoMorph uiValidTest testResult testProcess testTitle |
+	testTitle := aCollectionOfStrings removeAt: 1.
 	testResult := true.
 	testProcess := Processor activeProcess.
 	infoMorph := Morph new extent: 350 @ 400.
@@ -62,11 +61,10 @@ SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings forScore: aMorph 
 		do: [ :info | 
 			infoTestMorph
 				addMorph: ((StringMorph contents: info) backgroundColor: Color blue) ].
-	infoTestMorph addMorph: (StringMorph contents: aString).
 	infoMorph addMorph: infoTestMorph.
 	uiValidTest := Smalltalk ui theme
 		newPluggableDialogWindowIn: World
-		title: 'a test'
+		title: testTitle
 		for: infoMorph.
 	uiValidTest buttons
 		do: [ :each | 
@@ -80,12 +78,15 @@ SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings forScore: aMorph 
 						actionSelector: #value ].
 			each label = 'OK'
 				ifTrue: [ each
-						actionBlock: [ uiValidTest close.
+						actionBlock: [ uiValidTest
+								cancelled: false;
+								applyChanges;
+								delete.
 							testProcess resume ];
 						actionSelector: #value ] ].
 	[ uiValidTest openModal ] fork.
 	testProcess suspend.
-	self assert: testResult description: aString
+	self assert: testResult description: testTitle
 ]
 
 { #category : #'as yet unclassified' }
@@ -125,17 +126,19 @@ SODisplayRendererTest >> testAdjacentNotes3by3 [
 
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> testAdjacentNotesShiftWithMatch [
-	| dr aNoteSet aNoteSetFromKB aNoteSetFromGen disp aCollector infoTest aScoreMorph testTitle |
-	"20"
-	"25"
-	"26"
-	"17"
-	"21"
-	"26"
-	testTitle := '=> test 2 adjacents notes matched by KBoard trigger shift'.
-	infoTest := #('3 notes from gen : d3, e3, b3' '3 notes from kb : d3, e3, e4' 'd3 and e3 match -> color change to green' 'd3 and e3 are adjacent -> shift' 'Score must display 4 notes : ' 'd3 : green' 'e3 : green with shift to the right' 'b3 : black' 'e4 : red')
-		asOrderedCollection.
-	"	self assert: false."
+	| dr aNoteSet aNoteSetFromKB aNoteSetFromGen aCollector infoTest aScoreMorph testTitle |
+	testTitle := 'Test 2 adjacents notes matched by KBoard trigger shift'.
+	infoTest := {testTitle.
+	'3 notes from gen : d3, e3, b3'.
+	'3 notes from kb : d3, e3, e4'.
+	'd3 and e3 match -> color change to green'.
+	'd3 and e3 are adjacent -> shift'.
+	'Score must display 4 notes : '.
+	'd3 : green'.
+	'e3 : green with shift to the right'.
+	'b3 : black'.
+	'e4 : red'.
+	''} asOrderedCollection.
 	dr := SODisplayRenderer new.
 	aCollector := SODisplayCollector new.
 	aNoteSet := SONoteSet new
@@ -157,11 +160,8 @@ SODisplayRendererTest >> testAdjacentNotesShiftWithMatch [
 	aCollector addNewDraw: aNoteSetFromGen.
 	aCollector addNewTry: aNoteSetFromKB.
 	aScoreMorph := dr renderScoreFrom: aCollector.
-	self
-		displayInfoTest: infoTest
-		forScore: aScoreMorph
-		description: testTitle.
-	self assert: true
+	self displayInfoTest: infoTest forScore: aScoreMorph
+	"	self assert: true"
 ]
 
 { #category : #test }
