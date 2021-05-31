@@ -8,7 +8,8 @@ Class {
 		'testResult',
 		'testTitle',
 		'aScoreMorph',
-		'infoTest'
+		'infoTest',
+		'testProcess'
 	],
 	#category : #'SOSolfege-Tests-core'
 }
@@ -109,13 +110,16 @@ SODisplayRendererTest >> performDisplayTest [
 	infoMorph := self
 		createTestDisplayMorph: infoTest
 		forScore: aScoreMorph.
-	self sendTestWindowforScore: infoMorph
+	self sendTestWindowforScore: infoMorph.
+		testProcess resume
 ]
 
 { #category : #'tests - helper' }
 SODisplayRendererTest >> sendTestWindowforScore: infoMorph [
-	| testProcess uiValidTest  |
-	testProcess := Processor activeProcess.
+	"	| testProcess uiValidTest |"
+
+	| uiValidTest |
+"	testProcess := Processor activeProcess."
 	uiValidTest := Smalltalk ui theme
 		newPluggableDialogWindowIn: World
 		title: testTitle
@@ -127,19 +131,20 @@ SODisplayRendererTest >> sendTestWindowforScore: infoMorph [
 						label: 'Failed';
 						setBalloonText: 'mark test as failed';
 						actionBlock: [ testResult := false.
-							uiValidTest close.
-							testProcess resume ];
+							uiValidTest close
+							"testProcess resume " ];
 						actionSelector: #value ].
 			each label = 'OK'
 				ifTrue: [ each
 						actionBlock: [ uiValidTest
 								cancelled: false;
 								applyChanges;
-								delete.
-							testProcess resume ];
+								"testProcess resume"
+									delete ];
 						actionSelector: #value ] ].
-	[ uiValidTest openModal ] fork.
-	testProcess suspend
+	[ uiValidTest openModal ] forkAndWait.
+	"	uiValidTest openModal."
+
 ]
 
 { #category : #'as yet unclassified' }
@@ -162,6 +167,8 @@ SODisplayRendererTest >> testAdjacentNotes3by3 [
 
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> testAdjacentNotesShiftWithMatch [
+	"	| testProcess |"
+
 	testTitle := 'Test 2 adjacents notes matched by KBoard trigger shift'.
 	infoTest := {'3 notes from gen : d3, e3, b3'.
 	'3 notes from kb : d3, e3, e4' . 'd3 and e3 match -> color change to green'.
@@ -170,7 +177,11 @@ SODisplayRendererTest >> testAdjacentNotesShiftWithMatch [
 	'b3 : black' . 'e4 : red' . ''} asOrderedCollection.
 	testResult := true.
 	self dataPreparationForAdjacentNotesShiftWithMatch.
-	self performDisplayTest.
+	testProcess := Processor activeProcess.
+	 [ " testProcess suspend."
+	self performDisplayTest
+	"testProcess resume" ] fork .
+	testProcess suspend.
 	self assert: testResult description: testTitle
 ]
 
