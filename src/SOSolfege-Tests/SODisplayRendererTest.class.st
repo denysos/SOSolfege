@@ -11,8 +11,158 @@ Class {
 		'infoTest',
 		'testProcess'
 	],
+	#classVars : [
+		'Dialog',
+		'InfoMorph',
+		'TestResult',
+		'TestTitle',
+		'TestToPerform'
+	],
 	#category : #'SOSolfege-Tests-core'
 }
+
+{ #category : #'tests - helper' }
+SODisplayRendererTest class >> createTestDisplayMorph: aCollectionOfStrings forScore: aMorph [
+	| infoMorph infoTestMorph |
+	infoMorph := Morph new extent: 350 @ 400.
+	infoTestMorph := AlignmentMorph newColumn.
+	infoTestMorph addMorph: aMorph.
+	aCollectionOfStrings reversed
+		do: [ :info | 
+			infoTestMorph
+				addMorph: ((StringMorph contents: info) backgroundColor: Color blue) ].
+	infoMorph addMorph: infoTestMorph.
+	^ infoMorph
+]
+
+{ #category : #'tests - helper' }
+SODisplayRendererTest class >> morphForAdjacentNotesShiftWithMatch [
+	| aNoteSetFromKB dr aCollector aNoteSetFromGen aNoteSet aScoreMorph |
+	dr := SODisplayRenderer new.
+	aCollector := SODisplayCollector new.
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 21;
+		yourself.
+	aNoteSetFromGen := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 24;
+		yourself.
+	aNoteSetFromKB := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+	aCollector addNewDraw: aNoteSetFromGen.
+	aCollector addNewTry: aNoteSetFromKB.
+	aScoreMorph := dr renderScoreFrom: aCollector.
+	^ aScoreMorph
+]
+
+{ #category : #'tests - helper' }
+SODisplayRendererTest class >> morphFortestAdjacentNotes3by3: aRank [
+	| aNoteSetFromKB dr aCollector aNoteSet aScoreMorph |
+	dr := SODisplayRenderer new.
+	aCollector := SODisplayCollector new.
+	aNoteSet := SONoteSet new
+		addANoteWithRank: aRank;
+		addANoteWithRank: aRank - 1;
+		addANoteWithRank: aRank - 2;
+		yourself.
+	"	aNoteSetFromGen := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 24;
+		yourself."
+	aNoteSetFromKB := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+	"	aCollector addNewDraw: aNoteSetFromGen."
+	aCollector addNewTry: aNoteSetFromKB.
+	aScoreMorph := dr renderScoreFrom: aCollector.
+	^ aScoreMorph
+]
+
+{ #category : #tests }
+SODisplayRendererTest class >> sendTestDialog [
+
+	Dialog := Smalltalk ui theme
+		newPluggableTestDialogWindowIn: World
+		title: TestTitle
+		for: InfoMorph.
+	Dialog testToPerform: TestToPerform.
+	Dialog testClass: self.
+	self setButtonsForDialog: Dialog.
+	Dialog openModal
+]
+
+{ #category : #initialization }
+SODisplayRendererTest class >> setButtonsForDialog: uiValidTest [
+	uiValidTest buttons
+		do: [ :each | 
+			each label = 'Cancel'
+				ifTrue: [ each
+						label: 'Failed';
+						setBalloonText: 'mark test as failed' ] ]
+]
+
+{ #category : #tests }
+SODisplayRendererTest class >> testAdjacentNotes3by3 [
+	<script>
+	| infoTest aScoreMorph maxRank |
+	TestResult := true.
+	TestToPerform := #testAdjacentNotes3by3.
+	TestTitle := 'Display all notes, 3 by 3'.
+	infoTest := {'press OK to display new group of 3'.
+	'press Failed to stop testing' . 'notes are red, from KeyBoard'.
+	'second note of the group must be shifted'.
+	'mind the display of supp lines, under and above the score !'.
+	''} asOrderedCollection.
+	maxRank := SONoteData maxRank.
+	[ :break | 
+	3 to: maxRank do: [ :aRank | 
+		TestResult
+			ifFalse: [ break value ].
+		aScoreMorph := self morphFortestAdjacentNotes3by3: aRank.
+		InfoMorph := self
+			createTestDisplayMorph: infoTest
+			forScore: aScoreMorph.
+		self sendTestDialog ] ] valueWithExit
+]
+
+{ #category : #tests }
+SODisplayRendererTest class >> testAdjacentNotesShiftWithMatch [
+	<script>
+	| infoTest aScoreMorph |
+	TestToPerform := #testAdjacentNotesShiftWithMatch.
+	TestTitle := 'Test 2 adjacent notes matched by KBoard trigger shift'.
+	infoTest := {'3 notes from gen : d3, e3, b3'.
+	'3 notes from kb : d3, e3, e4' . 'd3 and e3 match -> color change to green'.
+	'd3 and e3 are adjacent -> shift' . 'Score must display 4 notes : '.
+	'd3 : green' . 'e3 : green with shift to the right'.
+	'b3 : black' . 'e4 : red' . ''} asOrderedCollection.
+	aScoreMorph := self morphForAdjacentNotesShiftWithMatch.
+	InfoMorph := self
+		createTestDisplayMorph: infoTest
+		forScore: aScoreMorph.
+	self sendTestDialog
+]
+
+{ #category : #accessing }
+SODisplayRendererTest class >> testResult [
+	^ TestResult
+]
+
+{ #category : #accessing }
+SODisplayRendererTest class >> testResult: anObject [
+	TestResult := anObject
+]
 
 { #category : #test }
 SODisplayRendererTest >> addGeneratorNotes: notesFromGenerator to: aNoteSet [
@@ -38,32 +188,6 @@ SODisplayRendererTest >> createTestDisplayMorph: aCollectionOfStrings forScore: 
 				addMorph: ((StringMorph contents: info) backgroundColor: Color blue) ].
 	infoMorph addMorph: infoTestMorph.
 	^ infoMorph
-]
-
-{ #category : #'tests - helper' }
-SODisplayRendererTest >> dataPreparationForAdjacentNotesShiftWithMatch [
-	| aNoteSetFromKB dr aCollector aNoteSetFromGen aNoteSet |
-	dr := SODisplayRenderer new.
-	aCollector := SODisplayCollector new.
-	aNoteSet := SONoteSet new
-		addANoteWithRank: 16;
-		addANoteWithRank: 17;
-		addANoteWithRank: 21;
-		yourself.
-	aNoteSetFromGen := SONoteSet new.
-	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
-	aNoteSet := SONoteSet new
-		addANoteWithRank: 16;
-		addANoteWithRank: 17;
-		addANoteWithRank: 24;
-		yourself.
-	aNoteSetFromKB := SONoteSet new.
-	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
-	aCollector addNewDraw: aNoteSetFromGen.
-	aCollector addNewTry: aNoteSetFromKB.
-	aScoreMorph := dr renderScoreFrom: aCollector
 ]
 
 { #category : #'as yet unclassified' }
@@ -104,6 +228,32 @@ SODisplayRendererTest >> displayInfoTest: aCollectionOfStrings forScore: aMorph 
 
 ]
 
+{ #category : #'tests - helper' }
+SODisplayRendererTest >> morphForAdjacentNotesShiftWithMatch [
+	| aNoteSetFromKB dr aCollector aNoteSetFromGen aNoteSet |
+	dr := SODisplayRenderer new.
+	aCollector := SODisplayCollector new.
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 21;
+		yourself.
+	aNoteSetFromGen := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
+	aNoteSet := SONoteSet new
+		addANoteWithRank: 16;
+		addANoteWithRank: 17;
+		addANoteWithRank: 24;
+		yourself.
+	aNoteSetFromKB := SONoteSet new.
+	aNoteSet
+		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+	aCollector addNewDraw: aNoteSetFromGen.
+	aCollector addNewTry: aNoteSetFromKB.
+	aScoreMorph := dr renderScoreFrom: aCollector
+]
+
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> performDisplayTest [
 	| infoMorph |
@@ -111,7 +261,7 @@ SODisplayRendererTest >> performDisplayTest [
 		createTestDisplayMorph: infoTest
 		forScore: aScoreMorph.
 	self sendTestWindowforScore: infoMorph.
-		testProcess resume
+		"testProcess resume"
 ]
 
 { #category : #'tests - helper' }
@@ -119,11 +269,19 @@ SODisplayRendererTest >> sendTestWindowforScore: infoMorph [
 	"	| testProcess uiValidTest |"
 
 	| uiValidTest |
-"	testProcess := Processor activeProcess."
+	"	testProcess := Processor activeProcess."
 	uiValidTest := Smalltalk ui theme
 		newPluggableDialogWindowIn: World
 		title: testTitle
 		for: infoMorph.
+	self setButtonsForDialog: uiValidTest.
+	"testProcess resume"
+	[ uiValidTest openModal ] forkAndWait
+	"	uiValidTest openModal."
+]
+
+{ #category : #'tests - helper' }
+SODisplayRendererTest >> setButtonsForDialog: uiValidTest [
 	uiValidTest buttons
 		do: [ :each | 
 			each label = 'Cancel'
@@ -131,8 +289,8 @@ SODisplayRendererTest >> sendTestWindowforScore: infoMorph [
 						label: 'Failed';
 						setBalloonText: 'mark test as failed';
 						actionBlock: [ testResult := false.
-							uiValidTest close
-							"testProcess resume " ];
+							uiValidTest close.
+							testProcess resume ];
 						actionSelector: #value ].
 			each label = 'OK'
 				ifTrue: [ each
@@ -141,33 +299,50 @@ SODisplayRendererTest >> sendTestWindowforScore: infoMorph [
 								applyChanges;
 								"testProcess resume"
 									delete ];
-						actionSelector: #value ] ].
-	[ uiValidTest openModal ] forkAndWait.
-	"	uiValidTest openModal."
-
+						actionSelector: #value ] ]
 ]
 
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> testAdjacentNotes3by3 [
+	"to run this test, see same selector, class side (run the script by clicking on method icon)"
+	"will open a dialog to validate the morph display"
+
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayRendererTest >> testAdjacentNotes3by3WithDialog [
+"this test is testing the same display than the script with the same name on class side"
 	| maxRank |
 	testTitle := 'Display all notes, 3 by 3'.
 	infoTest := {'press OK to display new group of 3'.
 	'press Failed to stop testing' . 'notes are red, from KeyBoard'.
 	'second note of the group must be shifted'.
 	'mind the display of supp lines, under and above the score !'.
-	'd3 : green' . ''} asOrderedCollection.
+	''} asOrderedCollection.
 	testResult := true.
 	maxRank := SONoteData maxRank.
+	testProcess := Processor activeProcess.
 	"start on 3 because we start on the higher rank of the 3 notes to show :"
-	3 to: maxRank do: [ :aRank | 
+	[ 3 to: maxRank do: [ :aRank | 
 		self dataPreparationForNotes3By3ForRank: aRank.
-		self performDisplayTest.
-		self assert: testResult description: testTitle ]
+		self performDisplayTest
+		"self assert: testResult description: testTitle " ].
+	testProcess resume ] fork.
+	testProcess suspend.
+	self assert: testResult description: testTitle
 ]
 
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> testAdjacentNotesShiftWithMatch [
-	"	| testProcess |"
+	"to run this test, see same selector, class side (run the script by clicking on method icon)"
+	"will open a dialog to validate the morph display"
+
+
+]
+
+{ #category : #'as yet unclassified' }
+SODisplayRendererTest >> testAdjacentNotesShiftWithMatchWithDialog [
+	"this test is testing the same display than the script with the same name on class side"
 
 	testTitle := 'Test 2 adjacents notes matched by KBoard trigger shift'.
 	infoTest := {'3 notes from gen : d3, e3, b3'.
@@ -176,11 +351,11 @@ SODisplayRendererTest >> testAdjacentNotesShiftWithMatch [
 	'd3 : green' . 'e3 : green with shift to the right'.
 	'b3 : black' . 'e4 : red' . ''} asOrderedCollection.
 	testResult := true.
-	self dataPreparationForAdjacentNotesShiftWithMatch.
+	self morphForAdjacentNotesShiftWithMatch.
 	testProcess := Processor activeProcess.
-	 [ " testProcess suspend."
-	self performDisplayTest
-	"testProcess resume" ] fork .
+	[ " testProcess suspend."
+	self performDisplayTest.
+	testProcess resume ] fork.
 	testProcess suspend.
 	self assert: testResult description: testTitle
 ]
@@ -238,6 +413,16 @@ SODisplayRendererTest >> testAssessPositionShift [
 				ifTrue: [ self assert: each positionShift ]	"11 next to 10, even if origin different" ]
 ]
 
+{ #category : #accessing }
+SODisplayRendererTest >> testResult [
+	^ testResult
+]
+
+{ #category : #accessing }
+SODisplayRendererTest >> testResult: anObject [
+	testResult := anObject
+]
+
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> testSuppLinesNotesOnAdjacentsLines [
 	| dr aNoteSet aNoteSetFromKB aNoteSetFromGen disp aCollector infoTest |
@@ -271,4 +456,14 @@ SODisplayRendererTest >> testSuppLinesNotesOnAdjacentsLines [
 	aCollector addNewTry: aNoteSetFromKB.
 	dr renderScoreFrom: aCollector.
 	self displayInfoTest: infoTest
+]
+
+{ #category : #accessing }
+SODisplayRendererTest >> testTitle [
+	^ testTitle
+]
+
+{ #category : #accessing }
+SODisplayRendererTest >> testTitle: anObject [
+	testTitle := anObject
 ]
