@@ -31,11 +31,6 @@ SOCollectedDrawAndTry >> aTry: anObject [
 	aTry := anObject
 ]
 
-{ #category : #'adding item' }
-SOCollectedDrawAndTry >> addAChord: aSONoteSet [ 
-	self shouldBeImplemented.
-]
-
 { #category : #initialization }
 SOCollectedDrawAndTry >> initialize [
 	super initialize.
