@@ -33,7 +33,7 @@ SOExerciceShelf class >> exerciceShelfExemple1 [
 	^ anExercicesShelf
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 SOExerciceShelf >> delete: anInteger [
 	exercices removeAt: anInteger
 ]
@@ -44,7 +44,7 @@ SOExerciceShelf >> initialize [
 	exercices := OrderedCollection new
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 SOExerciceShelf >> pickAnExercice: anInteger [
 	^ exercices at: anInteger
 ]
@@ -60,7 +60,7 @@ SOExerciceShelf >> printOn: aStream [
 				print: each ]
 ]
 
-{ #category : #'element access' }
+{ #category : #accessing }
 SOExerciceShelf >> save: aSOExercice [ 
 	exercices add: aSOExercice 
 ]
