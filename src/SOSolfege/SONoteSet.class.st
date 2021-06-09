@@ -120,7 +120,12 @@ SONoteSet >> isEmpty [
 
 { #category : #printing }
 SONoteSet >> printOn: aStream [
-	aStream print: noteChoice
+	noteChoice
+		do: [ :each | 
+			aStream
+				nextPutAll: each name asString;
+				space;
+				space ]
 ]
 
 { #category : #enumerating }

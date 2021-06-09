@@ -51,7 +51,13 @@ SOExerciceShelf >> pickAnExercice: anInteger [
 
 { #category : #printing }
 SOExerciceShelf >> printOn: aStream [
-	exercices do: [ :each | aStream print: each ]
+	exercices
+		doWithIndex: [ :each :index | 
+			aStream
+				nextPutAll: 'Exercice n° ';
+				print: index;
+				cr;
+				print: each ]
 ]
 
 { #category : #'element access' }
