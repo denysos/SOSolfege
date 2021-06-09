@@ -221,7 +221,9 @@ SODisplayRenderer >> renderScoreFrom: aCollector [
 
 { #category : #rendering }
 SODisplayRenderer >> renderScoreInWorldFrom: aCollector [
-	(self renderScoreFrom: aCollector) openInWorld
+	scoreMorph delete.
+	scoreMorph := self renderScoreFrom: aCollector.
+	scoreMorph openInWorld
 ]
 
 { #category : #composition }
