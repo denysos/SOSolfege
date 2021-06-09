@@ -55,7 +55,7 @@ SODisplayCollector >> addNewTry: aNoteSet [
 	self sendUpdatedFlag
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 SODisplayCollector >> getCollectedDrawAndTry [
 	^ toDisplay
 ]
@@ -82,7 +82,7 @@ SODisplayCollector >> isDisplayHistoryEmpty [
 	^ displayHistory isEmpty
 ]
 
-{ #category : #'accessing-testing' }
+{ #category : #testing }
 SODisplayCollector >> isEmpty [
 	^ (self isADrawEmpty) and: [self isATryEmpty]
 ]
@@ -92,7 +92,7 @@ SODisplayCollector >> moveDisplayToHistory [
 	displayHistory add: toDisplay
 ]
 
-{ #category : #initialization }
+{ #category : #history }
 SODisplayCollector >> resetDisplay [
 	self moveDisplayToHistory.
 	toDisplay := SOCollectedDrawAndTry new

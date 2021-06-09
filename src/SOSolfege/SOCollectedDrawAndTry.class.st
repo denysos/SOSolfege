@@ -38,7 +38,7 @@ SOCollectedDrawAndTry >> initialize [
 	self aTry: SONoteSet new
 ]
 
-{ #category : #'accessing-testing' }
+{ #category : #testing }
 SOCollectedDrawAndTry >> isADrawEmpty [
 	^ aDraw isEmpty
 ]
