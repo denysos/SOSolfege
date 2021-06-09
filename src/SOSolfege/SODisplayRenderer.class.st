@@ -142,13 +142,15 @@ SODisplayRenderer class >> scoreMorph [
 { #category : #adding }
 SODisplayRenderer >> addNote: aNote on: aScoreMorph [
 	| aNoteMorph |
+	""
 	aNoteMorph := EllipseMorph new
 		position: 0 @ 0;
 		extent: NoteSize;
 		color: aNote color;
 		setBalloonText: aNote name.
+	""
 	aScoreMorph addMorph: aNoteMorph.
-	"aNoteMorph center: (L // 2) @ (ScoreSlotsPosition at: aRank)"
+	""
 	aNoteMorph
 		center:
 			(aNote positionShift
@@ -156,22 +158,33 @@ SODisplayRenderer >> addNote: aNote on: aScoreMorph [
 				ifTrue: [ (ScoreSlotsPosition at: aNote rank) + (16 @ 0) ])
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #composition }
 SODisplayRenderer >> assessDisplayColors: aNoteSet [
 	aNoteSet applyRule: self ruleToSetNoteColor
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #composition }
 SODisplayRenderer >> assessPositionShift: aNoteSet [
 	aNoteSet applyRule: self ruleToShiftNotePosition
 ]
 
-{ #category : #initialization }
-SODisplayRenderer >> initialize [
-	scoreMorph := ScoreMorph
+{ #category : #rendering }
+SODisplayRenderer >> getNotesFromCollector: aCollector [
+	| noteSetToRender |
+	noteSetToRender := SONoteSet new.
+	aCollector getCollectedDrawAndTry aTry
+		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
+	aCollector getCollectedDrawAndTry aDraw
+		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
+	^ noteSetToRender
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #initialization }
+SODisplayRenderer >> initialize [
+	scoreMorph := ScoreMorph copy
+]
+
+{ #category : #composition }
 SODisplayRenderer >> makeLinesSuppMorphFor: aNoteData On: aScoreMorph [
 	aNoteData suppLines
 		do: [ :rank | 
@@ -182,12 +195,11 @@ SODisplayRenderer >> makeLinesSuppMorphFor: aNoteData On: aScoreMorph [
 				to: SupLineLength @ 0
 				color: Color black
 				width: 1.
-			"aNewLine center: (L // 2) @ linePosition."
 			aNewLine center: linePosition.
 			aScoreMorph addMorph: aNewLine ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #rendering }
 SODisplayRenderer >> morphFromNoteSet: aNoteSet [
 	| aScoreMorph |
 	aScoreMorph := ScoreMorph copy.
@@ -200,20 +212,11 @@ SODisplayRenderer >> morphFromNoteSet: aNoteSet [
 
 { #category : #rendering }
 SODisplayRenderer >> renderScoreFrom: aCollector [
-	| noteSetToRender |
-	scoreMorph delete.
-	noteSetToRender := SONoteSet new.
-	aCollector getCollectedDrawAndTry aTry
-		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
-	aCollector getCollectedDrawAndTry aDraw
-		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
-	self assessDisplayColors: noteSetToRender.
-	noteSetToRender removeDuplicates.
-	self assessPositionShift: noteSetToRender.
-	scoreMorph := self morphFromNoteSet: noteSetToRender.
-	^ scoreMorph
-	"scoreMorph openInWorld"
-	"scoreMorph openInWindow"
+	| noteSetToRender aScoreMorph |
+	noteSetToRender := self getNotesFromCollector: aCollector.
+	self setNotesProperties: noteSetToRender.
+	aScoreMorph := self morphFromNoteSet: noteSetToRender.
+	^ aScoreMorph
 ]
 
 { #category : #rendering }
@@ -221,7 +224,7 @@ SODisplayRenderer >> renderScoreInWorldFrom: aCollector [
 	(self renderScoreFrom: aCollector) openInWorld
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #composition }
 SODisplayRenderer >> ruleToSetNoteColor [
 	^ [ :aNoteChoice | 
 	aNoteChoice
@@ -232,7 +235,7 @@ SODisplayRenderer >> ruleToSetNoteColor [
 							prevNote color: prevNote matchColor ] ] ] ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #composition }
 SODisplayRenderer >> ruleToShiftNotePosition [
 	"a note is shifted if :
 - prevNote and nextNote have adjacent ranks
@@ -246,6 +249,13 @@ SODisplayRenderer >> ruleToShiftNotePosition [
 				ifNotNil: [ (((prevNote isNextTo: nextNote) and: [ prevNote isNotShifted ])
 						or: [ prevNote rank = nextNote rank and: [ prevNote isShifted ] ])
 						ifTrue: [ nextNote shiftPosition ] ] ] ]
+]
+
+{ #category : #rendering }
+SODisplayRenderer >> setNotesProperties: noteSetToRender [
+	self assessDisplayColors: noteSetToRender.
+	noteSetToRender removeDuplicates.
+	self assessPositionShift: noteSetToRender
 ]
 
 { #category : #'basic tests' }
