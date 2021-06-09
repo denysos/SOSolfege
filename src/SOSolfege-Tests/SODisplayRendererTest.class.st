@@ -14,7 +14,7 @@ Class {
 	#classVars : [
 		'Dialog',
 		'InfoMorph',
-		'TestResult',
+		'TestPassed',
 		'TestTitle',
 		'TestToPerform'
 	],
@@ -116,8 +116,8 @@ SODisplayRendererTest class >> setButtonsForDialog: uiValidTest [
 SODisplayRendererTest class >> testAdjacentNotes3by3 [
 	<script>
 	| infoTest aScoreMorph maxRank |
-	TestResult := true.
-	TestToPerform := #testAdjacentNotes3by3.
+	TestPassed := true.
+	TestToPerform := thisContext method selector.
 	TestTitle := 'Display all notes, 3 by 3'.
 	infoTest := {'press OK to display new group of 3'.
 	'press Failed to stop testing' . 'notes are red, from KeyBoard'.
@@ -127,7 +127,7 @@ SODisplayRendererTest class >> testAdjacentNotes3by3 [
 	maxRank := SONoteData maxRank.
 	[ :break | 
 	3 to: maxRank do: [ :aRank | 
-		TestResult
+		TestPassed
 			ifFalse: [ break value ].
 		aScoreMorph := self morphFortestAdjacentNotes3by3: aRank.
 		InfoMorph := self
@@ -140,7 +140,7 @@ SODisplayRendererTest class >> testAdjacentNotes3by3 [
 SODisplayRendererTest class >> testAdjacentNotesShiftWithMatch [
 	<script>
 	| infoTest aScoreMorph |
-	TestToPerform := #testAdjacentNotesShiftWithMatch.
+	TestToPerform := thisContext method selector.
 	TestTitle := 'Test 2 adjacent notes matched by KBoard trigger shift'.
 	infoTest := {'3 notes from gen : d3, e3, b3'.
 	'3 notes from kb : d3, e3, e4' . 'd3 and e3 match -> color change to green'.
@@ -155,13 +155,13 @@ SODisplayRendererTest class >> testAdjacentNotesShiftWithMatch [
 ]
 
 { #category : #accessing }
-SODisplayRendererTest class >> testResult [
-	^ TestResult
+SODisplayRendererTest class >> testPassed [
+	^ TestPassed
 ]
 
 { #category : #accessing }
-SODisplayRendererTest class >> testResult: anObject [
-	TestResult := anObject
+SODisplayRendererTest class >> testPassed: anObject [
+	TestPassed := anObject
 ]
 
 { #category : #test }
@@ -256,12 +256,16 @@ SODisplayRendererTest >> morphForAdjacentNotesShiftWithMatch [
 
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> performDisplayTest [
-	| infoMorph |
+	| infoMorph uiValidTest |
 	infoMorph := self
 		createTestDisplayMorph: infoTest
 		forScore: aScoreMorph.
-	self sendTestWindowforScore: infoMorph.
-		"testProcess resume"
+	uiValidTest := Smalltalk ui theme
+		newPluggableDialogWindowIn: World
+		title: testTitle
+		for: infoMorph.
+	self setButtonsForDialog: uiValidTest.	"testProcess resume"
+	[ uiValidTest openModal ] forkAndWait	"	uiValidTest openModal."
 ]
 
 { #category : #'tests - helper' }
@@ -311,7 +315,8 @@ SODisplayRendererTest >> testAdjacentNotes3by3 [
 
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> testAdjacentNotes3by3WithDialog [
-"this test is testing the same display than the script with the same name on class side"
+	"this test is testing the same display than the script with the same name on class side"
+
 	| maxRank |
 	testTitle := 'Display all notes, 3 by 3'.
 	infoTest := {'press OK to display new group of 3'.
@@ -324,9 +329,13 @@ SODisplayRendererTest >> testAdjacentNotes3by3WithDialog [
 	testProcess := Processor activeProcess.
 	"start on 3 because we start on the higher rank of the 3 notes to show :"
 	[ 3 to: maxRank do: [ :aRank | 
+		| infoMorph |
 		self dataPreparationForNotes3By3ForRank: aRank.
-		self performDisplayTest
-		"self assert: testResult description: testTitle " ].
+		infoMorph := self
+			createTestDisplayMorph: infoTest
+			forScore: aScoreMorph.
+		self sendTestWindowforScore: infoMorph.	"testProcess resume"
+		self ].
 	testProcess resume ] fork.
 	testProcess suspend.
 	self assert: testResult description: testTitle
@@ -414,12 +423,12 @@ SODisplayRendererTest >> testAssessPositionShift [
 ]
 
 { #category : #accessing }
-SODisplayRendererTest >> testResult [
+SODisplayRendererTest >> testPassed [
 	^ testResult
 ]
 
 { #category : #accessing }
-SODisplayRendererTest >> testResult: anObject [
+SODisplayRendererTest >> testPassed: anObject [
 	testResult := anObject
 ]
 

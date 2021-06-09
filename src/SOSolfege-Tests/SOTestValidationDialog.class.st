@@ -21,7 +21,7 @@ SOTestValidationDialog >> cancel [
 	(testClass history at: #passed) remove: testToPerform ifAbsent: [  ].
 	(testClass history at: #errors) remove: testToPerform ifAbsent: [  ].
 	(testClass history at: #failures) add: testToPerform.
-	testClass testResult: false
+	testClass testPassed: false
 ]
 
 { #category : #initialization }
