@@ -42,6 +42,19 @@ SODisplayCollectorTest >> testAddNewTry [
 		ranksDo: [ :eachNote | self assert: eachNote class equals: SOKeyboardNote ]
 ]
 
+{ #category : #tests }
+SODisplayCollectorTest >> testMoveDisplayToHistory [
+	self assert: aDisplayCollector isDisplayHistoryEmpty.
+	self assert: aDisplayCollector isEmpty.
+	aDisplayCollector addNewDraw: aDraw.
+	self deny: aDisplayCollector isADrawEmpty.
+	aDisplayCollector addNewTry: aTry.
+	self deny: aDisplayCollector isATryEmpty.
+	aDisplayCollector moveDisplayToHistory.
+	"	self assert: aDisplayCollector isEmpty."
+	self deny: aDisplayCollector isDisplayHistoryEmpty
+]
+
 { #category : #test }
 SODisplayCollectorTest >> testResetDisplay [
 	self assert: aDisplayCollector isEmpty.

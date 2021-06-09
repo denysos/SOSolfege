@@ -42,7 +42,6 @@ Class {
 SODisplayCollector >> addNewDraw: aNoteSet [
 	| aNewNoteSet |
 	self resetDisplay.
-	"self setOriginTo: #asGeneratorNote for: aNoteSet."
 	aNewNoteSet := aNoteSet setOriginTo: #asGeneratorNote.
 	toDisplay aDraw: aNewNoteSet.
 	self sendUpdatedFlag
@@ -51,8 +50,6 @@ SODisplayCollector >> addNewDraw: aNoteSet [
 { #category : #adding }
 SODisplayCollector >> addNewTry: aNoteSet [
 	| aNewNoteSet |
-	"self resetDisplay."
-	"self setOriginTo: #asKeyboardNote for: aNoteSet."
 	aNewNoteSet := aNoteSet setOriginTo: #asKeyboardNote.
 	toDisplay aTry: aNewNoteSet.
 	self sendUpdatedFlag
@@ -80,9 +77,14 @@ SODisplayCollector >> isATryEmpty [
 	^ toDisplay aTry isEmpty
 ]
 
+{ #category : #testing }
+SODisplayCollector >> isDisplayHistoryEmpty [
+	^ displayHistory isEmpty
+]
+
 { #category : #'accessing-testing' }
 SODisplayCollector >> isEmpty [
-	^ (toDisplay isADrawEmpty) and: [toDisplay isATryEmpty]
+	^ (self isADrawEmpty) and: [self isATryEmpty]
 ]
 
 { #category : #history }
@@ -100,18 +102,4 @@ SODisplayCollector >> resetDisplay [
 { #category : #'as yet unclassified' }
 SODisplayCollector >> sendUpdatedFlag [
 	^ true
-]
-
-{ #category : #adding }
-SODisplayCollector >> setOrigin: aNoteSet [
-	aNoteSet ranksDo: [ :eachNote | eachNote asGeneratorNote ]
-]
-
-{ #category : #adding }
-SODisplayCollector >> setOriginTo: aSelector for: aNoteSet [
-	| aNewNoteSet |
-	aNewNoteSet := SONoteSet new.
-	aNoteSet
-		ranksDo: [ :eachNote | aNewNoteSet addANote: (eachNote perform: aSelector) ].
-	^ aNewNoteSet
 ]
