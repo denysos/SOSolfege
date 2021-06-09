@@ -1,7 +1,7 @@
 Class {
 	#name : #SOKeyBoardSimulator,
 	#superclass : #SOSingleDrawToScore,
-	#category : #'SOSolfege-app'
+	#category : #'SOSolfege-commands'
 }
 
 { #category : #accessing }

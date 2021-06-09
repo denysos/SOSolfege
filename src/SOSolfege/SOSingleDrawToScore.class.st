@@ -1,7 +1,7 @@
 Class {
 	#name : #SOSingleDrawToScore,
 	#superclass : #SOSingleDrawToTranscript,
-	#category : #'SOSolfege-app'
+	#category : #'SOSolfege-commands'
 }
 
 { #category : #accessing }

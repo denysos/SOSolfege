@@ -7,7 +7,7 @@ Class {
 		'delayBeforeKBNote',
 		'delayBeforeGenNote'
 	],
-	#category : #'SOSolfege-app'
+	#category : #'SOSolfege-commands'
 }
 
 { #category : #initialization }

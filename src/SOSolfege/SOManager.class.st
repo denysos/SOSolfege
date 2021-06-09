@@ -29,7 +29,7 @@ Class {
 		'collector',
 		'renderer'
 	],
-	#category : #'SOSolfege-app'
+	#category : #'SOSolfege-commands'
 }
 
 { #category : #'instance creation' }

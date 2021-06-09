@@ -1,7 +1,7 @@
 Class {
 	#name : #SOSingleDrawToTranscript,
 	#superclass : #SOManager,
-	#category : #'SOSolfege-app'
+	#category : #'SOSolfege-commands'
 }
 
 { #category : #'helper methods' }
