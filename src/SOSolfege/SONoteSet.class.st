@@ -51,17 +51,6 @@ Class {
 	#category : #'SOSolfege-core'
 }
 
-{ #category : #parameters }
-SONoteSet class >> allNotesOnScore [
-	""
-
-	self deprecated: 'Please use #SONoteData #allNotesOnScore instead !!'.
-	^ {'c1' . 'd1' . 'e1' . 'f1' . 'g1' . 'a1' . 'b1' . 'c2' . 'd2' . 'e2'.
-	'f2' . 'g2' . 'a2' . 'b2' . 'c3' . 'd3' . 'e3' . 'f3' . 'g3' . 'a3'.
-	'b3' . 'c4' . 'd4' . 'e4' . 'f4' . 'g4' . 'a4' . 'b4' . 'c5'}
-		asOrderedCollection
-]
-
 { #category : #exemple }
 SONoteSet class >> newFullNoteSet [
 	| aNoteSet maxRank |
@@ -150,7 +139,6 @@ SONoteSet >> subsetAtRandomWith: anInteger [
 
 	| aNoteSet |
 	aNoteSet := self class new.
-	"ranks := noteChoice keys."
 	anInteger
 		timesRepeat: [ aNoteSet addANote: noteChoice atRandom copy ].
 	^ aNoteSet

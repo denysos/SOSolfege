@@ -260,11 +260,11 @@ SODisplayRenderer >> setNotesProperties: noteSetToRender [
 { #category : #'basic tests' }
 SODisplayRenderer >> toTranscriptFromNoteSet: aNoteSet [
 	aNoteSet
-		notesDo: [ :aRank | 
+		notesDo: [ :aNote | 
 			Transcript
-				show: aRank;
+				show: aNote asString;
 				space;
-				show: (SONoteSet allNotesOnScore at: aRank);
-				cr ].
+				"show: (SONoteData allNotesOnScore at: aRank);"
+					cr ].
 	Transcript cr
 ]

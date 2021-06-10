@@ -138,6 +138,14 @@ SONoteData >> positionShift [
 	^ positionShift
 ]
 
+{ #category : #printing }
+SONoteData >> printOn: aStream [
+	aStream
+		print: self rank;
+		space;
+		nextPutAll: self name
+]
+
 { #category : #accessing }
 SONoteData >> rank [
 	^ rank
