@@ -55,7 +55,7 @@ SONotesGenerator >> drawNotesFromNotesToLearn [
 { #category : #initialization }
 SONotesGenerator >> initialize [
 	super initialize.
-	notesToLearn := SONotes allNotesOnScore.
+	notesToLearn := SONoteData allNotesOnScore.
 	notesNumberToDraw := 1
 ]
 

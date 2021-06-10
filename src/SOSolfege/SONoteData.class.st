@@ -28,6 +28,11 @@ SONoteData class >> allNotesOnScore [
 		asOrderedCollection
 ]
 
+{ #category : #'as yet unclassified' }
+SONoteData class >> fromRank: aRank [
+	^ self new rank: aRank
+]
+
 { #category : #'class initialization' }
 SONoteData class >> initialize [
 	FullNotesCollection := self allNotesOnScore.
@@ -42,11 +47,6 @@ SONoteData class >> initialize [
 { #category : #accessing }
 SONoteData class >> maxRank [
 	^ MaxRank
-]
-
-{ #category : #'as yet unclassified' }
-SONoteData class >> withRank: aRank [
-	^ self new rank: aRank
 ]
 
 { #category : #comparing }
@@ -96,7 +96,7 @@ SONoteData >> initialize [
 	positionShift := false
 ]
 
-{ #category : #testing }
+{ #category : #comparing }
 SONoteData >> isNextTo: aNoteData [
 	^ (self rank - aNoteData rank) abs = 1
 
@@ -113,12 +113,12 @@ SONoteData >> isShifted [
 	^ positionShift
 ]
 
-{ #category : #accessing }
+{ #category : #comparing }
 SONoteData >> match: aNoteData [
 	^ self rank = aNoteData rank and: [ self origin ~= aNoteData origin ]
 ]
 
-{ #category : #'accessing colors' }
+{ #category : #initialization }
 SONoteData >> matchColor [
 	^ Color green
 ]
@@ -149,14 +149,14 @@ SONoteData >> rank: aRank [
 	name := FullNotesCollection at: aRank
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #composition }
 SONoteData >> shiftPosition [
 	" the note is moved on the right on the score to make it easier to read !"
 
 	positionShift := true
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #composition }
 SONoteData >> suppLines [
 	^ SuppLinesSlotsForANote at: self rank ifAbsent: [ #() ]
 ]

@@ -35,7 +35,7 @@ SONoteSetTest >> testRemoveDuplicate [
 	aNoteSetRanks := OrderedCollection new.
 	aNoteSet := SONoteSet new.
 	ranksWithDup do: [ :each | aNoteSet addANoteWithRank: each ].
-	aNoteSet ranksDo: [ :each | aNoteSetRanks add: each rank ].
+	aNoteSet notesDo: [ :each | aNoteSetRanks add: each rank ].
 	self deny: ranksNoDup equals: ranksWithDup.
 	self assert: ranksNoDup equals: aNoteSetRanks
 ]
@@ -51,9 +51,9 @@ SONoteSetTest >> testSetOriginTo [
 	aNoteSetFromGenerator := aNoteSet setOriginTo: #asGeneratorNote.
 	aNoteSetFromKeyboard := aNoteSet setOriginTo: #asKeyboardNote.
 	aNoteSetFromGenerator
-		ranksDo: [ :eachNote | self assert: eachNote class equals: SOGeneratorNote ].
+		notesDo: [ :eachNote | self assert: eachNote class equals: SOGeneratorNote ].
 	aNoteSetFromKeyboard
-		ranksDo: [ :eachNote | self assert: eachNote class equals: SOKeyboardNote ]
+		notesDo: [ :eachNote | self assert: eachNote class equals: SOKeyboardNote ]
 ]
 
 { #category : #tests }
@@ -76,7 +76,7 @@ SONoteSetTest >> testranksDo [
 	aNoteSet := SONoteSet new.
 	unsortedRanks do: [ :each | aNoteSet addANoteWithRank: each ].
 	outputRanks := OrderedCollection new.
-	aNoteSet ranksDo: [ :each | outputRanks add: each rank ].
+	aNoteSet notesDo: [ :each | outputRanks add: each rank ].
 	self
 		assert: outputRanks
 		equals: unsortedRanks asSortedCollection asOrderedCollection

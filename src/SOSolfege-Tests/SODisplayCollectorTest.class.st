@@ -28,7 +28,7 @@ SODisplayCollectorTest >> testAddNewDraw [
 	self deny: aDisplayCollector isADrawEmpty.
 	self assert: aDisplayCollector isATryEmpty.
 	aDisplayCollector getCollectedDrawAndTry aDraw
-		ranksDo: [ :eachNote | self assert: eachNote class equals: SOGeneratorNote ].
+		notesDo: [ :eachNote | self assert: eachNote class equals: SOGeneratorNote ].
 
 ]
 
@@ -39,7 +39,7 @@ SODisplayCollectorTest >> testAddNewTry [
 	self deny: aDisplayCollector isATryEmpty.
 	self assert: aDisplayCollector isADrawEmpty.
 	aDisplayCollector getCollectedDrawAndTry aTry
-		ranksDo: [ :eachNote | self assert: eachNote class equals: SOKeyboardNote ]
+		notesDo: [ :eachNote | self assert: eachNote class equals: SOKeyboardNote ]
 ]
 
 { #category : #tests }

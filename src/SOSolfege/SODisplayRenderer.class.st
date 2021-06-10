@@ -170,9 +170,9 @@ SODisplayRenderer >> getNotesFromCollector: aCollector [
 	| noteSetToRender |
 	noteSetToRender := SONoteSet new.
 	aCollector getCollectedDrawAndTry aTry
-		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
+		notesDo: [ :eachNote | noteSetToRender addANote: eachNote ].
 	aCollector getCollectedDrawAndTry aDraw
-		ranksDo: [ :eachNote | noteSetToRender addANote: eachNote ].
+		notesDo: [ :eachNote | noteSetToRender addANote: eachNote ].
 	^ noteSetToRender
 ]
 
@@ -201,7 +201,7 @@ SODisplayRenderer >> morphFromNoteSet: aNoteSet [
 	| aScoreMorph |
 	aScoreMorph := ScoreMorph copy.
 	aNoteSet
-		ranksDo: [ :eachNote | 
+		notesDo: [ :eachNote | 
 			self makeLinesSuppMorphFor: eachNote On: aScoreMorph.
 			self addNote: eachNote on: aScoreMorph ].
 	^ aScoreMorph
@@ -260,7 +260,7 @@ SODisplayRenderer >> setNotesProperties: noteSetToRender [
 { #category : #'basic tests' }
 SODisplayRenderer >> toTranscriptFromNoteSet: aNoteSet [
 	aNoteSet
-		ranksDo: [ :aRank | 
+		notesDo: [ :aRank | 
 			Transcript
 				show: aRank;
 				space;

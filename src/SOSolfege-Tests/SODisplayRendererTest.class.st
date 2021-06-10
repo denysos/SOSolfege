@@ -47,7 +47,7 @@ SODisplayRendererTest class >> morphForAdjacentNotesShiftWithMatch [
 		yourself.
 	aNoteSetFromGen := SONoteSet new.
 	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
+		notesDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
 	aNoteSet := SONoteSet new
 		addANoteWithRank: 16;
 		addANoteWithRank: 17;
@@ -55,7 +55,7 @@ SODisplayRendererTest class >> morphForAdjacentNotesShiftWithMatch [
 		yourself.
 	aNoteSetFromKB := SONoteSet new.
 	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+		notesDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
 	aCollector addNewDraw: aNoteSetFromGen.
 	aCollector addNewTry: aNoteSetFromKB.
 	aScoreMorph := dr renderScoreFrom: aCollector.
@@ -82,7 +82,7 @@ SODisplayRendererTest class >> morphFortestAdjacentNotes3by3: aRank [
 		yourself."
 	aNoteSetFromKB := SONoteSet new.
 	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+		notesDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
 	"	aCollector addNewDraw: aNoteSetFromGen."
 	aCollector addNewTry: aNoteSetFromKB.
 	aScoreMorph := dr renderScoreFrom: aCollector.
@@ -167,13 +167,13 @@ SODisplayRendererTest class >> testPassed: anObject [
 { #category : #test }
 SODisplayRendererTest >> addGeneratorNotes: notesFromGenerator to: aNoteSet [
 	notesFromGenerator
-		do: [ :each | aNoteSet addANote: (SOGeneratorNote withRank: each) ]
+		do: [ :each | aNoteSet addANote: (SOGeneratorNote fromRank: each) ]
 ]
 
 { #category : #test }
 SODisplayRendererTest >> addKeyboardNotes: notesFromKeyboard to: aNoteSet [
 	notesFromKeyboard
-		do: [ :each | aNoteSet addANote: (SOKeyboardNote withRank: each) ]
+		do: [ :each | aNoteSet addANote: (SOKeyboardNote fromRank: each) ]
 ]
 
 { #category : #'tests - helper' }
@@ -211,7 +211,7 @@ SODisplayRendererTest >> dataPreparationForNotes3By3ForRank: aRank [
 		yourself."
 	aNoteSetFromKB := SONoteSet new.
 	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+		notesDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
 "	aCollector addNewDraw: aNoteSetFromGen."
 	aCollector addNewTry: aNoteSetFromKB.
 	aScoreMorph := dr renderScoreFrom: aCollector
@@ -240,7 +240,7 @@ SODisplayRendererTest >> morphForAdjacentNotesShiftWithMatch [
 		yourself.
 	aNoteSetFromGen := SONoteSet new.
 	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
+		notesDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
 	aNoteSet := SONoteSet new
 		addANoteWithRank: 16;
 		addANoteWithRank: 17;
@@ -248,7 +248,7 @@ SODisplayRendererTest >> morphForAdjacentNotesShiftWithMatch [
 		yourself.
 	aNoteSetFromKB := SONoteSet new.
 	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
+		notesDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
 	aCollector addNewDraw: aNoteSetFromGen.
 	aCollector addNewTry: aNoteSetFromKB.
 	aScoreMorph := dr renderScoreFrom: aCollector
@@ -383,7 +383,7 @@ SODisplayRendererTest >> testAssessDisplayColors [
 	aDisplayRenderer := SODisplayRenderer new.
 	aDisplayRenderer assessDisplayColors: aNoteSetWithMatchedColor.
 	aNoteSetWithMatchedColor
-		ranksDo: [ :each | 
+		notesDo: [ :each | 
 			each rank = 1
 				ifTrue: [ self assert: each color = Color black ].	"no match, generator default color = black"
 			each rank = 5
@@ -409,7 +409,7 @@ SODisplayRendererTest >> testAssessPositionShift [
 	aDisplayRenderer := SODisplayRenderer new.
 	aDisplayRenderer assessPositionShift: aNoteSetWithNotePositionShifted.
 	aNoteSetWithNotePositionShifted
-		ranksDo: [ :each | 
+		notesDo: [ :each | 
 			each rank = 1
 				ifTrue: [ self deny: each positionShift ].	"first note, next to nothing ! "
 			each rank = 5
@@ -430,41 +430,6 @@ SODisplayRendererTest >> testPassed [
 { #category : #accessing }
 SODisplayRendererTest >> testPassed: anObject [
 	testResult := anObject
-]
-
-{ #category : #'as yet unclassified' }
-SODisplayRendererTest >> testSuppLinesNotesOnAdjacentsLines [
-	| dr aNoteSet aNoteSetFromKB aNoteSetFromGen disp aCollector infoTest |
-	"20"
-	"25"
-	"26"
-	"17"
-	"21"
-	"26"
-	infoTest := #('3 notes from gen : d3, e3, b3' '3 notes from kb : d3, e3, e4' 'd3 and e3 match -> color change to green' 'd3 and e3 are adjacent -> shift' 'Score must display 4 notes : ' 'd3 : green' 'e3 : green with shift to the right' 'b3 : black' 'e4 : red')
-		asOrderedCollection.
-	dr := SODisplayRenderer new.
-	aCollector := SODisplayCollector new.
-	aNoteSet := SONoteSet new
-		addANoteWithRank: 16;
-		addANoteWithRank: 17;
-		addANoteWithRank: 21;
-		yourself.
-	aNoteSetFromGen := SONoteSet new.
-	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromGen addANote: eachNote asGeneratorNote ].
-	aNoteSet := SONoteSet new
-		addANoteWithRank: 16;
-		addANoteWithRank: 17;
-		addANoteWithRank: 24;
-		yourself.
-	aNoteSetFromKB := SONoteSet new.
-	aNoteSet
-		ranksDo: [ :eachNote | aNoteSetFromKB addANote: eachNote asKeyboardNote ].
-	aCollector addNewDraw: aNoteSetFromGen.
-	aCollector addNewTry: aNoteSetFromKB.
-	dr renderScoreFrom: aCollector.
-	self displayInfoTest: infoTest
 ]
 
 { #category : #accessing }

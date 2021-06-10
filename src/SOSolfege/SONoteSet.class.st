@@ -46,8 +46,7 @@ Class {
 		'noteChoice'
 	],
 	#classVars : [
-		'FullNotesCollection',
-		'MaxRank'
+		'FullNotesCollection'
 	],
 	#category : #'SOSolfege-core'
 }
@@ -65,9 +64,10 @@ SONoteSet class >> allNotesOnScore [
 
 { #category : #exemple }
 SONoteSet class >> newFullNoteSet [
-	| aNoteSet |
+	| aNoteSet maxRank |
 	aNoteSet := self new.
-	1 to: MaxRank do: [ :i | aNoteSet addANoteWithRank: i ].
+	maxRank := SONoteData maxRank.
+	1 to: maxRank do: [ :i | aNoteSet addANoteWithRank: i ].
 	^ aNoteSet
 ]
 
@@ -87,28 +87,18 @@ SONoteSet >> addANote: aNoteData [
 
 { #category : #adding }
 SONoteSet >> addANoteWithRank: aRank [
-	noteChoice add: (SONoteData withRank: aRank).
+	noteChoice add: (SONoteData fromRank: aRank).
 	self removeDuplicates
 ]
 
 { #category : #'as yet unclassified' }
 SONoteSet >> applyRule: aBlock [
-	"noteChoice inject: nil into: aBlockWith2Args"
-
-	"noteChoice doAdjacentPairs: aBlockWith2Args."
-
 	noteChoice in: aBlock
 ]
 
 { #category : #initialization }
 SONoteSet >> initialize [
-	"a Dictionary is used to store notes
-key : rank of the notes in FullNotesCollection
-value : name of the note in FullNotesCollection
-a Dictionary to make sure that there is no duplicate notes"
-
 	super initialize.
-	"noteChoice := Dictionary new"
 	noteChoice := SortedCollection
 		sortBlock: [ :noteData1 :noteData2 | noteData1 < noteData2 ]
 ]
@@ -116,6 +106,11 @@ a Dictionary to make sure that there is no duplicate notes"
 { #category : #testing }
 SONoteSet >> isEmpty [
 	^ self size = 0
+]
+
+{ #category : #enumerating }
+SONoteSet >> notesDo: aBlockClosure [
+	noteChoice do: aBlockClosure
 ]
 
 { #category : #printing }
@@ -126,11 +121,6 @@ SONoteSet >> printOn: aStream [
 				nextPutAll: each name asString;
 				space;
 				space ]
-]
-
-{ #category : #enumerating }
-SONoteSet >> ranksDo: aBlockClosure [
-	noteChoice do: aBlockClosure
 ]
 
 { #category : #private }
@@ -145,7 +135,7 @@ SONoteSet >> setOriginTo: aSelector [
 	| aNewNoteSet |
 	aNewNoteSet := SONoteSet new.
 	self
-		ranksDo: [ :eachNote | aNewNoteSet addANote: (eachNote perform: aSelector) ].
+		notesDo: [ :eachNote | aNewNoteSet addANote: (eachNote perform: aSelector) ].
 	^ aNewNoteSet
 ]
 
