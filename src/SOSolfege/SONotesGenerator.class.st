@@ -25,47 +25,7 @@ Class {
 	#category : #'SOSolfege-core'
 }
 
-{ #category : #action }
-SONotesGenerator >> drawNotesFromNotesToLearn [
-	"draw notes from notesToLearn at random, the same note may be draw more than ones
-	but there will be only one of each in the Chord (see SOChord)
-"
-
-	| chord |
-	chord := SONoteSet new.
-	notesNumberToDraw
-		timesRepeat: [ chord addANoteWithRank: notesToLearn atRandom ].
-	^ chord
-]
-
-{ #category : #initialization }
-SONotesGenerator >> initialize [
-	super initialize.
-	notesToLearn := SONoteData allNotesOnScore.
-	notesNumberToDraw := 1
-]
-
-{ #category : #accessing }
-SONotesGenerator >> notesNumberToDraw [
-	^ notesNumberToDraw
-]
-
-{ #category : #accessing }
-SONotesGenerator >> notesNumberToDraw: anInteger [
-	notesNumberToDraw := anInteger
-]
-
-{ #category : #accessing }
-SONotesGenerator >> notesToLearn [
-	^ notesToLearn
-]
-
-{ #category : #accessing }
-SONotesGenerator >> notesToLearn: anObject [
-	notesToLearn := anObject
-]
-
-{ #category : #'as yet unclassified' }
+{ #category : #'sub item creating' }
 SONotesGenerator >> singleDrawFrom: anExercice [
 	^ anExercice noteSet
 		subsetAtRandomWith: anExercice notesNumberInADraw
