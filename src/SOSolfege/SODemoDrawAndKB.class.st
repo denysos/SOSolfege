@@ -26,7 +26,7 @@ SODemoDrawAndKB >> initialize [
 ]
 
 { #category : #'as yet unclassified' }
-SODemoDrawAndKB >> runExercice10: anExercice [
+SODemoDrawAndKB >> runExercice10Times: anExercice [
 	"fork pour eviter de bloquer l'UI pendant les wait !!!"
 
 	[ 10 timesRepeat: [ self runExercice: anExercice ] ] fork

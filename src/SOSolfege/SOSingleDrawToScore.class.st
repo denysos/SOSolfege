@@ -16,12 +16,5 @@ SOSingleDrawToScore >> renderer [
 
 { #category : #rendering }
 SOSingleDrawToScore >> rendering [
-	"	Transcript
-		show: 'coucou';
-		cr.
-	Morph new openInWorld"
-
-	"	renderer renderScoreFrom: collector"
-
 	renderer renderScoreInWorldFrom: collector
 ]
