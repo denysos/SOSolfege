@@ -22,18 +22,15 @@ Class {
 		'LinesModel',
 		'NoteSize',
 		'NotesModel',
-		'NotesMorphDict',
 		'ScoreMorph',
 		'ScoreSlotsPosition',
 		'SlotGap',
-		'SupLineLength',
-		'SupLinesModel',
-		'SupLinesMorphDict'
+		'SupLineLength'
 	],
 	#category : #'SOSolfege-core'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'class initialization' }
 SODisplayRenderer class >> computeSlotsPositionOn: aCollectionOfInteger [
 	| scoreSlotsPosition |
 	scoreSlotsPosition := OrderedCollection new.
@@ -60,16 +57,16 @@ SODisplayRenderer class >> initialize [
 		color: Color white.
 	NotesModel := Interval from: 1 to: 29 by: 1.
 	ScoreSlotsPosition := self computeSlotsPositionOn: NotesModel.
-	NotesMorphDict := Dictionary new.
+"	NotesMorphDict := Dictionary new."
 	LinesModel := #(5 7 9 11 13 17 19 21 23 25) asOrderedCollection.
-	SupLinesModel := #(1 3 15 27 29) asOrderedCollection.
-	SupLinesMorphDict := Dictionary new.
+"	SupLinesModel := #(1 3 15 27 29) asOrderedCollection."
+"	SupLinesMorphDict := Dictionary new."
 	self makeLinesMorphOn: ScoreMorph  .
 "	self makeSupLinesMorph.
 	self makeNotesMorph"
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'class initialization' }
 SODisplayRenderer class >> makeLinesMorphOn: aScoreMorph [
 	LinesModel
 		do: [ :aLineIndex | 
@@ -85,8 +82,13 @@ SODisplayRenderer class >> makeLinesMorphOn: aScoreMorph [
 			aScoreMorph addMorph: aNewLine ]
 ]
 
-{ #category : #'as yet unclassified' }
-SODisplayRenderer class >> makeNotesMorph [
+{ #category : #accessing }
+SODisplayRenderer class >> scoreMorph [
+	^ ScoreMorph
+]
+
+{ #category : #deprecated }
+SODisplayRenderer class >> xmakeNotesMorph [
 "creer un morph Ellipse aux bonnes dimensions et le positionner !!!"
 	NotesModel
 		do: [ :aNoteIndex | 
@@ -104,8 +106,8 @@ SODisplayRenderer class >> makeNotesMorph [
 			NotesMorphDict at: aNoteIndex put: aNewNote ]
 ]
 
-{ #category : #'as yet unclassified' }
-SODisplayRenderer class >> makeScoreMorph [
+{ #category : #deprecated }
+SODisplayRenderer class >> xmakeScoreMorph [
 
 	| h l largeurInterligne longueurLigne longueurLigneSup partition |
 	h := 200.
@@ -119,8 +121,8 @@ SODisplayRenderer class >> makeScoreMorph [
 		color: Color white.
 ]
 
-{ #category : #'as yet unclassified' }
-SODisplayRenderer class >> makeSupLinesMorph [
+{ #category : #deprecated }
+SODisplayRenderer class >> xmakeSupLinesMorph [
 	SupLinesModel
 		do: [ :aLineIndex | 
 			| aNewLine linePosition |
@@ -132,11 +134,6 @@ SODisplayRenderer class >> makeSupLinesMorph [
 				width: 1.
 			ScoreMorph addMorph: aNewLine.
 			SupLinesMorphDict at: aLineIndex put: aNewLine ]
-]
-
-{ #category : #accessing }
-SODisplayRenderer class >> scoreMorph [
-	^ ScoreMorph
 ]
 
 { #category : #adding }
