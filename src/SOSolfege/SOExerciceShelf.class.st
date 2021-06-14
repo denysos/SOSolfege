@@ -12,7 +12,7 @@ Class {
 
 { #category : #'as yet unclassified' }
 SOExerciceShelf class >> exerciceShelfExemple1 [
-	| exercice1 exercice2 exercice3 anExercicesShelf |
+	| exercice1 exercice2 exercice3 exercice4 anExercicesShelf |
 	exercice1 := SOExercice new.
 	anExercicesShelf := self new.
 	"utilisation de l'exercice par defaut"
@@ -30,6 +30,12 @@ SOExerciceShelf class >> exerciceShelfExemple1 [
 		noteSet: SONoteSet newGKeyNoteSet;
 		yourself.
 	anExercicesShelf save: exercice3.
+	exercice4 := SOExercice new
+		info: 'info exercice4';
+		notesNumberInADraw: 3;
+		tempo: 30;
+		yourself.
+	anExercicesShelf save: exercice4.
 	^ anExercicesShelf
 ]
 
