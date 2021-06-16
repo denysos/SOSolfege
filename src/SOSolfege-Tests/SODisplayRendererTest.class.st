@@ -309,8 +309,10 @@ SODisplayRendererTest >> setButtonsForDialog: uiValidTest [
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> testAdjacentNotes3by3 [
 	"to run this test, see same selector, class side (run the script by clicking on method icon)"
+
 	"will open a dialog to validate the morph display"
 
+	self assert: false
 ]
 
 { #category : #'as yet unclassified' }
@@ -344,9 +346,10 @@ SODisplayRendererTest >> testAdjacentNotes3by3WithDialog [
 { #category : #'as yet unclassified' }
 SODisplayRendererTest >> testAdjacentNotesShiftWithMatch [
 	"to run this test, see same selector, class side (run the script by clicking on method icon)"
+
 	"will open a dialog to validate the morph display"
 
-
+	self assert: false
 ]
 
 { #category : #'as yet unclassified' }
