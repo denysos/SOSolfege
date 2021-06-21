@@ -25,13 +25,13 @@ SOKeyBoardToScore >> initialize [
 SOKeyBoardToScore >> runExercice: anExercice [
 	"no exercice needed ! call with anExercice := nil"
 
-	| scanDelay aNoteSet |
+	| scanDelay aNoteSet renderingDelay |
 	scanDelay := receptMIDI scanDelay.
-
-	" receptMIDI monitor ."
+	renderingDelay := Delay forMilliseconds: 50.
 	receptMIDI monitorMidiDataCollector.
 	KBRendererProcess := [ [ true ]
-		whileTrue: [ midiKBNotes := receptMIDI midiDataCollector.
+		whileTrue: [ renderingDelay wait.
+			midiKBNotes := receptMIDI midiDataCollector.
 			midiKBNotes isEmpty
 				ifFalse: [ aNoteSet := midiNoteSetConverter fromMidiToNoteSet: midiKBNotes.
 					self sendToCollector: aNoteSet.
@@ -43,5 +43,6 @@ SOKeyBoardToScore >> runExercice: anExercice [
 { #category : #accessing }
 SOKeyBoardToScore >> stop [
 	receptMIDI stopReception.
-	KBRendererProcess terminate
+	KBRendererProcess terminate.
+"	port close"
 ]
