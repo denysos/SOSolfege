@@ -13,12 +13,14 @@ SOMidiNoteSetConverter >> fromMidiToNoteSet: aMidiCodeCollection [
 	aNoteSet := SONoteSet new.
 	aMidiCodeCollection
 		do: [ :aMidiKeyCode | 
-			aRank := midiToNoteSetTable at: aMidiKeyCode.
-			aNoteSet addANoteWithRank: aRank ].
+			[ :continue | 
+			aRank := midiToNoteSetTable at: aMidiKeyCode ifAbsent: [ nil ].
+			aRank ifNil: [ continue value ].
+			aNoteSet addANoteWithRank: aRank ] valueWithExit ].
 	^ aNoteSet
 	"ifAbsent: [ continue value ]"
-	
-"controler que aMidiKeyCode ne depasse pas les possibilitées de aRank !!!"
+
+	"controler que aMidiKeyCode ne depasse pas les possibilitées de aRank !!!"
 ]
 
 { #category : #initialization }
