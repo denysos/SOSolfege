@@ -9,18 +9,43 @@ Class {
 
 { #category : #'instance creation' }
 SOMidiNoteSetConverter >> fromMidiToNoteSet: aMidiCodeCollection [
-	| aNoteSet aRank |
+	| aNoteSet |
 	aNoteSet := SONoteSet new.
 	aMidiCodeCollection
+		do: [ :aMidiKeyCode | 
+			midiToNoteSetTable
+				at: aMidiKeyCode
+				ifPresent: [ :aRank | aNoteSet addANoteWithRank: aRank ] ].
+	^ aNoteSet
+
+	"with symbol #outOfBounds : "
+	"		| aNoteSet aRank |
+	aNoteSet := SONoteSet new.
+	aMidiCodeCollection
+		do: [ :aMidiKeyCode | 
+			aRank := midiToNoteSetTable
+				at: aMidiKeyCode
+				ifAbsent: [ #outOfBounds ].
+			aRank = #outOfBounds
+				ifFalse: [ aNoteSet addANoteWithRank: aRank ] ].
+	^ aNoteSet"
+
+
+	"With continue :"
+	"	aMidiCodeCollection
 		do: [ :aMidiKeyCode | 
 			[ :continue | 
 			aRank := midiToNoteSetTable at: aMidiKeyCode ifAbsent: [ nil ].
 			aRank ifNil: [ continue value ].
 			aNoteSet addANoteWithRank: aRank ] valueWithExit ].
-	^ aNoteSet
-	"ifAbsent: [ continue value ]"
+	^ aNoteSet"
 
-	"controler que aMidiKeyCode ne depasse pas les possibilitées de aRank !!!"
+	"with ifNotNil: "
+	"	aMidiCodeCollection
+		do: [ :aMidiKeyCode | 
+			aRank := midiToNoteSetTable at: aMidiKeyCode ifAbsent: [ nil ].
+			aRank ifNotNil: [ aNoteSet addANoteWithRank: aRank ] ].
+	^ aNoteSet"
 ]
 
 { #category : #initialization }
