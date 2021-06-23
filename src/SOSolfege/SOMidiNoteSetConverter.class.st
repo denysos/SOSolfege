@@ -17,6 +17,8 @@ SOMidiNoteSetConverter >> fromMidiToNoteSet: aMidiCodeCollection [
 			aNoteSet addANoteWithRank: aRank ].
 	^ aNoteSet
 	"ifAbsent: [ continue value ]"
+	
+"controler que aMidiKeyCode ne depasse pas les possibilitées de aRank !!!"
 ]
 
 { #category : #initialization }

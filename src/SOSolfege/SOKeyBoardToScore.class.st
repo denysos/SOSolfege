@@ -9,8 +9,28 @@ Class {
 		'midiNoteSetConverter',
 		'KBRendererProcess'
 	],
+	#classVars : [
+		'DisplayKB'
+	],
 	#category : #'SOSolfege-commands'
 }
+
+{ #category : #'as yet unclassified' }
+SOKeyBoardToScore class >> runKeyboardToScore [
+	"run the use case :
+	- hit keys on the keyboard
+	- the notes are displayed on the score"
+
+	<script>
+	DisplayKB := SOKeyBoardToScore new.
+	DisplayKB runExercice: nil
+]
+
+{ #category : #'as yet unclassified' }
+SOKeyBoardToScore class >> stopKeyboardToScore [
+	<script>
+	DisplayKB stop
+]
 
 { #category : #initialization }
 SOKeyBoardToScore >> initialize [
