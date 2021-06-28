@@ -17,35 +17,6 @@ SOMidiNoteSetConverter >> fromMidiToNoteSet: aMidiCodeCollection [
 				at: aMidiKeyCode
 				ifPresent: [ :aRank | aNoteSet addANoteWithRank: aRank ] ].
 	^ aNoteSet
-
-	"with symbol #outOfBounds : "
-	"		| aNoteSet aRank |
-	aNoteSet := SONoteSet new.
-	aMidiCodeCollection
-		do: [ :aMidiKeyCode | 
-			aRank := midiToNoteSetTable
-				at: aMidiKeyCode
-				ifAbsent: [ #outOfBounds ].
-			aRank = #outOfBounds
-				ifFalse: [ aNoteSet addANoteWithRank: aRank ] ].
-	^ aNoteSet"
-
-
-	"With continue :"
-	"	aMidiCodeCollection
-		do: [ :aMidiKeyCode | 
-			[ :continue | 
-			aRank := midiToNoteSetTable at: aMidiKeyCode ifAbsent: [ nil ].
-			aRank ifNil: [ continue value ].
-			aNoteSet addANoteWithRank: aRank ] valueWithExit ].
-	^ aNoteSet"
-
-	"with ifNotNil: "
-	"	aMidiCodeCollection
-		do: [ :aMidiKeyCode | 
-			aRank := midiToNoteSetTable at: aMidiKeyCode ifAbsent: [ nil ].
-			aRank ifNotNil: [ aNoteSet addANoteWithRank: aRank ] ].
-	^ aNoteSet"
 ]
 
 { #category : #initialization }
