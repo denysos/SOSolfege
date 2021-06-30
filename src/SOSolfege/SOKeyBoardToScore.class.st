@@ -37,7 +37,7 @@ SOKeyBoardToScore >> initialize [
 	super initialize.
 	portNumber := SimpleMIDIPort inputPortNumFromUser.	"integer"
 	port := SimpleMIDIPort openOnPortNumber: portNumber.
-	receptMIDI := MIDIInputParserTestForSOS on: port.
+	receptMIDI := MIDIInputParserForSOSolfege on: port.
 	midiNoteSetConverter := SOMidiNoteSetConverter new
 ]
 

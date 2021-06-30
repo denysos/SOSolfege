@@ -2,7 +2,7 @@
 test for receiving MIDI Data
 "
 Class {
-	#name : #MIDIInputParserTestForSOS,
+	#name : #MIDIInputParserForSOSolfege,
 	#superclass : #MIDIInputParser,
 	#instVars : [
 		'midiReceptionProcess',
@@ -13,26 +13,26 @@ Class {
 }
 
 { #category : #'midi monitor' }
-MIDIInputParserTestForSOS >> getMidiKBNotesCodes [
+MIDIInputParserForSOSolfege >> getMidiKBNotesCodes [
 	self
 		midiDoEvents:
 			[ :cmd :arg1 :arg2 | self sendMidiDataCollectorCmd: cmd with: arg1 with: arg2 ]
 ]
 
 { #category : #initialization }
-MIDIInputParserTestForSOS >> initialize [
+MIDIInputParserForSOSolfege >> initialize [
 	super initialize.
 	scanDelay := Delay forMilliseconds: 100.
 	midiDataCollector := OrderedCollection new
 ]
 
 { #category : #accessing }
-MIDIInputParserTestForSOS >> midiDataCollector [
+MIDIInputParserForSOSolfege >> midiDataCollector [
 	^ midiDataCollector
 ]
 
 { #category : #'as yet unclassified' }
-MIDIInputParserTestForSOS >> midiDoEvents: midiActionBlock [
+MIDIInputParserForSOSolfege >> midiDoEvents: midiActionBlock [
 	| time cmd arg1 arg2 |
 	"	self clearBuffers."
 	self
@@ -48,7 +48,7 @@ MIDIInputParserTestForSOS >> midiDoEvents: midiActionBlock [
 ]
 
 { #category : #'as yet unclassified' }
-MIDIInputParserTestForSOS >> midiDoEvents: midiActionBlock every: aDelay [
+MIDIInputParserForSOSolfege >> midiDoEvents: midiActionBlock every: aDelay [
 	"to implement !!!!!"
 
 	| time cmd arg1 arg2 |
@@ -69,14 +69,14 @@ MIDIInputParserTestForSOS >> midiDoEvents: midiActionBlock every: aDelay [
 ]
 
 { #category : #'midi monitor' }
-MIDIInputParserTestForSOS >> monitor [
+MIDIInputParserForSOSolfege >> monitor [
 	self
 		"midiDoEvents:    [ :cmd :arg1 :arg2 | self printCmd: cmd with: arg1 with: arg2 ] every: scanDelay "
 		midiDoEvents:    [ :cmd :arg1 :arg2 | self sendToRenderCmd: cmd with: arg1 with: arg2 ] every: scanDelay 
 ]
 
 { #category : #'midi monitor' }
-MIDIInputParserTestForSOS >> monitorMidiDataCollector [
+MIDIInputParserForSOSolfege >> monitorMidiDataCollector [
 	self
 		midiDoEvents:
 			[ :cmd :arg1 :arg2 | self sendMidiDataCollectorCmd: cmd with: arg1 with: arg2 ]
@@ -85,17 +85,17 @@ MIDIInputParserTestForSOS >> monitorMidiDataCollector [
 ]
 
 { #category : #initialization }
-MIDIInputParserTestForSOS >> resetMidiDataCollector [
+MIDIInputParserForSOSolfege >> resetMidiDataCollector [
 	midiDataCollector := OrderedCollection new
 ]
 
 { #category : #accessing }
-MIDIInputParserTestForSOS >> scanDelay [
+MIDIInputParserForSOSolfege >> scanDelay [
 	^ scanDelay
 ]
 
 { #category : #'as yet unclassified' }
-MIDIInputParserTestForSOS >> sendMidiDataCollectorCmd: cmdByte with: arg1 with: arg2 [
+MIDIInputParserForSOSolfege >> sendMidiDataCollectorCmd: cmdByte with: arg1 with: arg2 [
 	| cmd ch bend |
 		"	cmd = 144 ifTrue: [
 		^ Transcript show: ('key down: ', arg1 printString, ' vel: ', arg2 printString, ' chan: ', ch printString); cr]."
@@ -109,7 +109,7 @@ MIDIInputParserTestForSOS >> sendMidiDataCollectorCmd: cmdByte with: arg1 with: 
 ]
 
 { #category : #'as yet unclassified' }
-MIDIInputParserTestForSOS >> sendToRenderCmd: cmdByte with: arg1 with: arg2 [
+MIDIInputParserForSOSolfege >> sendToRenderCmd: cmdByte with: arg1 with: arg2 [
 	| cmd ch bend |
 	"	cmd = 144 ifTrue: [
 		^ Transcript show: ('key down: ', arg1 printString, ' vel: ', arg2 printString, ' chan: ', ch printString); cr]."
@@ -127,6 +127,6 @@ MIDIInputParserTestForSOS >> sendToRenderCmd: cmdByte with: arg1 with: arg2 [
 ]
 
 { #category : #'as yet unclassified' }
-MIDIInputParserTestForSOS >> stopReception [
+MIDIInputParserForSOSolfege >> stopReception [
 	midiReceptionProcess terminate
 ]
