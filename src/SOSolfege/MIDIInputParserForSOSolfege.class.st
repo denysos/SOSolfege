@@ -16,7 +16,8 @@ Class {
 MIDIInputParserForSOSolfege >> getMidiKBNotesCodes [
 	self
 		midiDoEvents:
-			[ :cmd :arg1 :arg2 | self sendMidiDataCollectorCmd: cmd with: arg1 with: arg2 ]
+			[ :cmd :arg1 :arg2 | self populateMidiDataCollectorWithMidiNoteCodeUsingCmd: cmd with: arg1 with: arg2 ].
+	^ midiDataCollector
 ]
 
 { #category : #initialization }
@@ -79,9 +80,23 @@ MIDIInputParserForSOSolfege >> monitor [
 MIDIInputParserForSOSolfege >> monitorMidiDataCollector [
 	self
 		midiDoEvents:
-			[ :cmd :arg1 :arg2 | self sendMidiDataCollectorCmd: cmd with: arg1 with: arg2 ]
+			[ :cmd :arg1 :arg2 | self populateMidiDataCollectorWithMidiNoteCodeUsingCmd: cmd with: arg1 with: arg2 ]
 		every: scanDelay
 	"midiDoEvents:    [ :cmd :arg1 :arg2 | self printCmd: cmd with: arg1 with: arg2 ] every: scanDelay "
+]
+
+{ #category : #'as yet unclassified' }
+MIDIInputParserForSOSolfege >> populateMidiDataCollectorWithMidiNoteCodeUsingCmd: cmdByte with: arg1 with: arg2 [
+	| cmd ch bend |
+	"	cmd = 144 ifTrue: [
+		^ Transcript show: ('key down: ', arg1 printString, ' vel: ', arg2 printString, ' chan: ', ch printString); cr]."
+	cmdByte < 240
+		ifTrue: [ "channel message"
+			cmd := cmdByte bitAnd: 2r11110000.
+			ch := (cmdByte bitAnd: 2r00001111) + 1 ]
+		ifFalse: [ cmd := cmdByte ].	"system message"
+	(cmd = 144 and: [ arg2 > 0 ])
+		ifTrue: [ midiDataCollector add: arg1 ]
 ]
 
 { #category : #initialization }
@@ -92,20 +107,6 @@ MIDIInputParserForSOSolfege >> resetMidiDataCollector [
 { #category : #accessing }
 MIDIInputParserForSOSolfege >> scanDelay [
 	^ scanDelay
-]
-
-{ #category : #'as yet unclassified' }
-MIDIInputParserForSOSolfege >> sendMidiDataCollectorCmd: cmdByte with: arg1 with: arg2 [
-	| cmd ch bend |
-		"	cmd = 144 ifTrue: [
-		^ Transcript show: ('key down: ', arg1 printString, ' vel: ', arg2 printString, ' chan: ', ch printString); cr]."
-	cmdByte < 240
-		ifTrue: [ "channel message"
-			cmd := cmdByte bitAnd: 2r11110000.
-			ch := (cmdByte bitAnd: 2r00001111) + 1 ]
-		ifFalse: [ cmd := cmdByte ].	"system message"
-	(cmd = 144 and: [ arg2 > 0 ])
-		ifTrue: [ midiDataCollector  add: arg1  ]
 ]
 
 { #category : #'as yet unclassified' }

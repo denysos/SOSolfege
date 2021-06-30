@@ -48,11 +48,11 @@ SOKeyBoardToScore >> runExercice: anExercice [
 	| aNoteSet renderingDelay |
 	renderingDelay := Delay forMilliseconds: 100.
 	"	receptMIDI monitorMidiDataCollector."
-		receptMIDI clearBuffers.
+	receptMIDI clearBuffers.
 	KBRendererProcess := [ [ true ]
 		whileTrue: [ renderingDelay wait.
-			receptMIDI getMidiKBNotesCodes.
-			midiKBNotes := receptMIDI midiDataCollector.
+			midiKBNotes := receptMIDI getMidiKBNotesCodes.
+			"midiKBNotes := receptMIDI midiDataCollector."
 			midiKBNotes isEmpty
 				ifFalse: [ aNoteSet := midiNoteSetConverter fromMidiToNoteSet: midiKBNotes.
 					self sendToCollector: aNoteSet.
