@@ -12,11 +12,25 @@ Class {
 	#category : #'SOSolfege-core'
 }
 
+{ #category : #'as yet unclassified' }
+MIDIInputParserForSOSolfege >> collectMidiNoteCodeForCMD144UsingCmd: cmdByte with: arg1 with: arg2 [
+	| cmd ch bend |
+	"	cmd = 144 ifTrue: [
+		^ Transcript show: ('key down: ', arg1 printString, ' vel: ', arg2 printString, ' chan: ', ch printString); cr]."
+	cmdByte < 240
+		ifTrue: [ "channel message"
+			cmd := cmdByte bitAnd: 2r11110000.
+			ch := (cmdByte bitAnd: 2r00001111) + 1 ]
+		ifFalse: [ cmd := cmdByte ].	"system message"
+	(cmd = 144 and: [ arg2 > 0 ])
+		ifTrue: [ midiDataCollector add: arg1 ]
+]
+
 { #category : #'midi monitor' }
 MIDIInputParserForSOSolfege >> getMidiKBNotesCodes [
 	self
 		midiDoEvents:
-			[ :cmd :arg1 :arg2 | self populateMidiDataCollectorWithMidiNoteCodeUsingCmd: cmd with: arg1 with: arg2 ].
+			[ :cmd :arg1 :arg2 | self collectMidiNoteCodeForCMD144UsingCmd: cmd with: arg1 with: arg2 ].
 	^ midiDataCollector
 ]
 
@@ -73,30 +87,7 @@ MIDIInputParserForSOSolfege >> midiDoEvents: midiActionBlock every: aDelay [
 MIDIInputParserForSOSolfege >> monitor [
 	self
 		"midiDoEvents:    [ :cmd :arg1 :arg2 | self printCmd: cmd with: arg1 with: arg2 ] every: scanDelay "
-		midiDoEvents:    [ :cmd :arg1 :arg2 | self sendToRenderCmd: cmd with: arg1 with: arg2 ] every: scanDelay 
-]
-
-{ #category : #'midi monitor' }
-MIDIInputParserForSOSolfege >> monitorMidiDataCollector [
-	self
-		midiDoEvents:
-			[ :cmd :arg1 :arg2 | self populateMidiDataCollectorWithMidiNoteCodeUsingCmd: cmd with: arg1 with: arg2 ]
-		every: scanDelay
-	"midiDoEvents:    [ :cmd :arg1 :arg2 | self printCmd: cmd with: arg1 with: arg2 ] every: scanDelay "
-]
-
-{ #category : #'as yet unclassified' }
-MIDIInputParserForSOSolfege >> populateMidiDataCollectorWithMidiNoteCodeUsingCmd: cmdByte with: arg1 with: arg2 [
-	| cmd ch bend |
-	"	cmd = 144 ifTrue: [
-		^ Transcript show: ('key down: ', arg1 printString, ' vel: ', arg2 printString, ' chan: ', ch printString); cr]."
-	cmdByte < 240
-		ifTrue: [ "channel message"
-			cmd := cmdByte bitAnd: 2r11110000.
-			ch := (cmdByte bitAnd: 2r00001111) + 1 ]
-		ifFalse: [ cmd := cmdByte ].	"system message"
-	(cmd = 144 and: [ arg2 > 0 ])
-		ifTrue: [ midiDataCollector add: arg1 ]
+		midiDoEvents:    [ :cmd :arg1 :arg2 | self sendToTranscriptCmd: cmd with: arg1 with: arg2 ] every: scanDelay 
 ]
 
 { #category : #initialization }
@@ -110,10 +101,8 @@ MIDIInputParserForSOSolfege >> scanDelay [
 ]
 
 { #category : #'as yet unclassified' }
-MIDIInputParserForSOSolfege >> sendToRenderCmd: cmdByte with: arg1 with: arg2 [
+MIDIInputParserForSOSolfege >> sendToTranscriptCmd: cmdByte with: arg1 with: arg2 [
 	| cmd ch bend |
-	"	cmd = 144 ifTrue: [
-		^ Transcript show: ('key down: ', arg1 printString, ' vel: ', arg2 printString, ' chan: ', ch printString); cr]."
 	cmdByte < 240
 		ifTrue: [ "channel message"
 			cmd := cmdByte bitAnd: 2r11110000.
@@ -129,5 +118,9 @@ MIDIInputParserForSOSolfege >> sendToRenderCmd: cmdByte with: arg1 with: arg2 [
 
 { #category : #'as yet unclassified' }
 MIDIInputParserForSOSolfege >> stopReception [
-	midiReceptionProcess terminate
+	| delayBeforeClosePort |
+	midiReceptionProcess terminate.
+	delayBeforeClosePort := Delay forSeconds: 1.
+	delayBeforeClosePort wait.
+	midiPort close
 ]
