@@ -16,20 +16,20 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-SOKeyBoardToScore class >> runKeyboardToScoreNoMidiProcess [
+SOKeyBoardToScore class >> runKeyboardToScore [
 	"run the use case :
 	- hit keys on the keyboard
 	- the notes are displayed on the score"
 
 	<script>
 	DisplayKB := SOKeyBoardToScore new.
-	DisplayKB runExerciceNoMidiProcess: nil
+	DisplayKB runExercice: nil
 ]
 
 { #category : #'as yet unclassified' }
-SOKeyBoardToScore class >> stopKeyboardToScoreNoMidiProcess [
+SOKeyBoardToScore class >> stopKeyboardToScore [
 	<script>
-	DisplayKB stopNoMidiProcess
+	DisplayKB stop
 ]
 
 { #category : #initialization }
@@ -42,7 +42,7 @@ SOKeyBoardToScore >> initialize [
 ]
 
 { #category : #'as yet unclassified' }
-SOKeyBoardToScore >> runExerciceNoMidiProcess: anExercice [
+SOKeyBoardToScore >> runExercice: anExercice [
 	"no exercice needed ! call with anExercice := nil"
 
 	| aNoteSet renderingDelay |
@@ -62,7 +62,7 @@ SOKeyBoardToScore >> runExerciceNoMidiProcess: anExercice [
 ]
 
 { #category : #accessing }
-SOKeyBoardToScore >> stopNoMidiProcess [
+SOKeyBoardToScore >> stop [
 	| delayBeforeClosePort |
 	delayBeforeClosePort := Delay forSeconds: 1.
 	KBRendererProcess terminate.
