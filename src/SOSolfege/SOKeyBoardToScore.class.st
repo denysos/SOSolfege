@@ -27,9 +27,26 @@ SOKeyBoardToScore class >> runKeyboardToScore [
 ]
 
 { #category : #'as yet unclassified' }
+SOKeyBoardToScore class >> runKeyboardToScoreNoMidiProcess [
+	"run the use case :
+	- hit keys on the keyboard
+	- the notes are displayed on the score"
+
+	<script>
+	DisplayKB := SOKeyBoardToScore new.
+	DisplayKB runExerciceNoMidiProcess: nil
+]
+
+{ #category : #'as yet unclassified' }
 SOKeyBoardToScore class >> stopKeyboardToScore [
 	<script>
 	DisplayKB stop
+]
+
+{ #category : #'as yet unclassified' }
+SOKeyBoardToScore class >> stopKeyboardToScoreNoMidiProcess [
+	<script>
+	DisplayKB stopNoMidiProcess
 ]
 
 { #category : #initialization }

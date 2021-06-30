@@ -12,6 +12,13 @@ Class {
 	#category : #'SOSolfege-core'
 }
 
+{ #category : #'midi monitor' }
+MIDIInputParserTestForSOS >> getMidiKBNotesCodes [
+	self
+		midiDoEvents:
+			[ :cmd :arg1 :arg2 | self sendMidiDataCollectorCmd: cmd with: arg1 with: arg2 ]
+]
+
 { #category : #initialization }
 MIDIInputParserTestForSOS >> initialize [
 	super initialize.
@@ -22,6 +29,22 @@ MIDIInputParserTestForSOS >> initialize [
 { #category : #accessing }
 MIDIInputParserTestForSOS >> midiDataCollector [
 	^ midiDataCollector
+]
+
+{ #category : #'as yet unclassified' }
+MIDIInputParserTestForSOS >> midiDoEvents: midiActionBlock [
+	| time cmd arg1 arg2 |
+	"	self clearBuffers."
+	self
+		midiDo: [ :item | 
+			time := item at: 1.
+			cmd := item at: 2.
+			arg1 := arg2 := nil.
+			item size > 2
+				ifTrue: [ arg1 := item at: 3.
+					item size > 3
+						ifTrue: [ arg2 := item at: 4 ] ].
+			midiActionBlock value: cmd value: arg1 value: arg2 ]
 ]
 
 { #category : #'as yet unclassified' }
