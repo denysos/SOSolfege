@@ -77,9 +77,41 @@ SOKeyBoardToScore >> runExercice: anExercice [
 		forkNamed: 'SOSolfege:KB Rendering '
 ]
 
+{ #category : #'as yet unclassified' }
+SOKeyBoardToScore >> runExerciceNoMidiProcess: anExercice [
+	"no exercice needed ! call with anExercice := nil"
+
+	| aNoteSet renderingDelay |
+	renderingDelay := Delay forMilliseconds: 100.
+	"	receptMIDI monitorMidiDataCollector."
+		receptMIDI clearBuffers.
+	KBRendererProcess := [ [ true ]
+		whileTrue: [ renderingDelay wait.
+			receptMIDI getMidiKBNotesCodes.
+			midiKBNotes := receptMIDI midiDataCollector.
+			midiKBNotes isEmpty
+				ifFalse: [ aNoteSet := midiNoteSetConverter fromMidiToNoteSet: midiKBNotes.
+					self sendToCollector: aNoteSet.
+					self rendering.
+					receptMIDI resetMidiDataCollector ] ] ]
+		forkNamed: 'SOSolfege:KB Rendering '
+]
+
 { #category : #accessing }
 SOKeyBoardToScore >> stop [
+	| delayBeforeClosePort |
+	delayBeforeClosePort := Delay forSeconds: 1.
 	receptMIDI stopReception.
 	KBRendererProcess terminate.
-"	port close"
+	delayBeforeClosePort wait.
+	port close
+]
+
+{ #category : #accessing }
+SOKeyBoardToScore >> stopNoMidiProcess [
+	| delayBeforeClosePort |
+	delayBeforeClosePort := Delay forSeconds: 1.
+	KBRendererProcess terminate.
+	delayBeforeClosePort wait.
+	port close
 ]
